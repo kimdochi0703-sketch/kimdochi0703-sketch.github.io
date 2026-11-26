@@ -139,12 +139,24 @@
   if (uin) uin.addEventListener('click', function () { applyUnit('in'); });
 
   /* filters */
+  var activeFilter = 'all';
+  function visibleIndices() {
+    var out = [];
+    for (var i = 0; i < works.length; i++) {
+      if (activeFilter === 'all' || works[i].series === activeFilter) out.push(i);
+    }
+    return out;
+  }
   function applyFilter(key) {
+    activeFilter = key;
     var visible = 0;
-    cards.forEach(function (c, i) {
+    cards.forEach(function (c) {
       var on = (key === 'all' || c.dataset.series === key);
       c.classList.toggle('is-hidden', !on);
-      if (on) visible++;
+      if (on) {
+        c.classList.add('in');
+        visible++;
+      }
     });
     filters.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.filter === key ? 'true' : 'false'); });
     var count = document.getElementById('visible-count');
@@ -165,6 +177,7 @@
   var lbSize = document.getElementById('lb-size');
   var lbYear = document.getElementById('lb-year');
   var lbNote = document.getElementById('lb-note');
+  var lbInquire = document.getElementById('lb-inquire');
   var lbIndex = -1;
   var lastFocus = null;
 
@@ -183,6 +196,11 @@
     lbSize.textContent = sizeText(w.w, w.h, unit);
     lbYear.textContent = w.year;
     lbNote.textContent = langNow() === 'kr' ? w.note_kr : w.note_en;
+    if (lbInquire) {
+      var subj = (langNow() === 'kr' ? '[작품 문의] ' + w.title_kr : 'Inquiry: ' + w.title_en) + ' (' + w.year + ', ' + sizeText(w.w, w.h, unit) + ')';
+      lbInquire.href = 'mailto:e.zy@kakao.com?subject=' + encodeURIComponent(subj);
+      lbInquire.textContent = langNow() === 'kr' ? '작품 문의 →' : 'Inquire about this work →';
+    }
   }
 
   function open(i) {
@@ -201,7 +219,11 @@
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
   function step(d) {
-    render((lbIndex + d + works.length) % works.length);
+    var vis = visibleIndices();
+    if (!vis.length) vis = [lbIndex];
+    var pos = vis.indexOf(lbIndex);
+    var nextIdx = pos === -1 ? vis[0] : vis[(pos + d + vis.length) % vis.length];
+    render(nextIdx);
     if (history.replaceState) history.replaceState(null, '', '#' + works[lbIndex].id);
   }
 
@@ -216,6 +238,16 @@
   lb.querySelector('.lb-prev').addEventListener('click', function () { step(-1); });
   lb.querySelector('.lb-next').addEventListener('click', function () { step(1); });
   lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+
+  var tx = 0;
+  var lbStage = lb.querySelector('.lb-stage');
+  if (lbStage) {
+    lbStage.addEventListener('touchstart', function (e) { tx = e.changedTouches[0].clientX; }, { passive: true });
+    lbStage.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 48) step(dx < 0 ? 1 : -1);
+    }, { passive: true });
+  }
 
   document.addEventListener('keydown', function (e) {
     if (!lb.classList.contains('open')) return;
