@@ -396,6 +396,11 @@ html[lang="ko"] .wm,html[lang="ko"] .wy{font-family:var(--kr-serif);font-style:n
   .works-list{grid-template-columns:minmax(0,1fr);row-gap:clamp(52px,9vw,74px)}
   .work-cap{padding-right:0}
 }
+@media (max-width:640px){
+  .works-bar{gap:12px 20px}
+  .filters{gap:10px 22px}
+  .unit{margin-left:auto}
+}
 
 /* ---------- lightbox (dark room) ---------- */
 .lb{
