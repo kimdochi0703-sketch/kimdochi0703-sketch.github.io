@@ -67,6 +67,29 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  /* ---------------- scroll progress hairline ---------------- */
+  var prog = document.createElement('div');
+  prog.className = 'progress';
+  prog.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(prog);
+  var progRaf = 0;
+  function paintProgress() {
+    progRaf = 0;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var y = window.scrollY || document.documentElement.scrollTop;
+    var p = h > 40 ? Math.min(1, Math.max(0, y / h)) : 0;
+    prog.style.transform = 'scaleX(' + p + ')';
+    prog.classList.toggle('on', p > 0.004 && p < 0.999);
+  }
+  function progressTick() {
+    if (progRaf) return;
+    progRaf = requestAnimationFrame(paintProgress);
+  }
+  paintProgress();
+  window.addEventListener('scroll', progressTick, { passive: true });
+  window.addEventListener('resize', progressTick, { passive: true });
+  window.addEventListener('load', paintProgress);
+
   /* ---------------- mobile menu ---------------- */
   var menu = document.getElementById('menu');
   var menuBtn = document.getElementById('menu-btn');
