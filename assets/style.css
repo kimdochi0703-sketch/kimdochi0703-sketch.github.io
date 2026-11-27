@@ -297,9 +297,10 @@ html[lang="ko"] .hero-plate .s{text-transform:none;letter-spacing:.02em}
   .hero-name{margin-top:16px}
 }
 @media (max-width:680px){
-  .hero-grid{row-gap:22px}
+  .hero-grid{row-gap:16px}
+  .hero-inner{padding-bottom:16px}
   .hero-name{font-size:clamp(64px,21vw,90px)}
-  .hero-plate{margin-left:calc(var(--edge) * -1);margin-right:calc(var(--edge) * -1)}
+  .hero-plate{justify-self:stretch;width:auto;max-width:none;margin-left:calc(var(--edge) * -1);margin-right:calc(var(--edge) * -1)}
   .hero-plate figcaption{padding-left:var(--edge);padding-right:var(--edge);margin-top:12px;padding-top:10px}
   .hero-plate .n{display:none}
   .hero-line{order:3;margin-top:4px}
