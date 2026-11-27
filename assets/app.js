@@ -14,7 +14,8 @@
     'works.html':   { en: 'Works — E.ZY', kr: '작품 — E.ZY' },
     'series.html':  { en: 'Series — E.ZY', kr: '연작 — E.ZY' },
     'archive.html': { en: 'Archive — E.ZY', kr: '아카이브 — E.ZY' },
-    'about.html':   { en: 'About — E.ZY', kr: '소개 — E.ZY' }
+    'about.html':   { en: 'About — E.ZY', kr: '소개 — E.ZY' },
+    '404.html':     { en: 'Page not found — E.ZY', kr: '페이지를 찾을 수 없습니다 — E.ZY' }
   };
 
   function readLang() {
@@ -140,37 +141,37 @@
       label_en: 'Selection', label_kr: '선별',
       title_en: 'Selected works, 2023 — 2026', title_kr: '선별 작품, 2023 — 2026',
       desc_en: 'The portfolio selection: seven works from Consigned Consciousness, seven from Tremors of Countless Particles, and Frame. These are the works sent to galleries and fairs.',
-      desc_kr: '포트폴리오에 실린 선별. 〈위임된 의식〉 7점, 〈무수한 입자의 떨림〉 7점, 그리고 〈Frame〉. 갤러리와 아트페어에 보내는 작품입니다.'
+      desc_kr: '포트폴리오에 실은 15점. 〈위임된 의식〉 7점, 〈무수한 입자의 떨림〉 7점, 〈Frame〉 1점입니다. 갤러리와 아트페어에 보내는 작품입니다.'
     },
     all: {
       label_en: 'All works', label_kr: '전체 작품',
       title_en: 'Everything catalogued', title_kr: '수록된 모든 작업',
-      desc_en: 'The whole record, series first: Consigned Consciousness Nos. 03–23, Frame, the individual works of 2026, and the particle paintings of 2023–24.',
-      desc_kr: '기록된 전부. 연작부터 차례로 〈위임된 의식〉 03–23번, 〈Frame〉, 2026년 개별 작업, 2023–24년 입자 연작.'
+      desc_en: 'The whole record, series first: Consigned Consciousness, Frame, the individual works of 2026, and the particle paintings of 2023–24.',
+      desc_kr: '기록한 전부. 〈위임된 의식〉과 〈Frame〉, 2026년의 개별 작업, 2023–24년의 입자 연작이 차례로 이어집니다.'
     },
     cc: {
       label_en: 'Series I', label_kr: '연작 I',
-      title_en: 'Consigned Consciousness, Nos. 03 — 23', title_kr: '위임된 의식, 03 — 23',
-      desc_en: 'A circle is the vessel of thought; a rectangle is the screen that absorbs it. Twenty-one of the twenty-three numbered paintings are reproduced; Nos. 01 and 02 are held with the studio.',
-      desc_kr: '원은 사유의 그릇, 사각형은 그것을 흡수하는 화면. 23점 가운데 21점을 실었고, 01·02번은 작업실에 있습니다.'
+      title_en: 'Consigned Consciousness', title_kr: '〈위임된 의식〉',
+      desc_en: 'A circle is the vessel of thought; a rectangle is the screen that absorbs it. Twenty-one of the twenty-three paintings are reproduced; the first two are held with the studio.',
+      desc_kr: '원은 사유의 그릇, 사각형은 그것을 받아 가는 화면. 23점 가운데 21점을 실었고, 첫 두 점은 작업실에 있습니다.'
     },
     frame: {
       label_en: 'Series III', label_kr: '연작 III',
       title_en: 'Frame — We Are Always Confined', title_kr: 'Frame — 우리는 늘 갇혀 있다',
-      desc_en: 'A structural work: linen drawn over a wood frame whose bars are set where a conventional canvas would have none. The frame is never seen, only read through the contours it leaves.',
-      desc_kr: '구조 작업. 일반 캔버스라면 없을 자리에 살을 더 댄 목재 틀 위로 린넨을 당겼다. 틀은 보이지 않고, 표면에 남긴 윤곽으로만 읽힌다.'
+      desc_en: 'A structural work in which the frame is never seen; it is read only through the contours it leaves on the surface. One plane divided into rectangles of different sizes becomes a set of universes we cannot step outside.',
+      desc_kr: '틀을 보이지 않게 다룬 구조 작업. 표면에 남은 윤곽으로만 틀의 존재를 읽습니다. 한 화면을 나눈 여러 크기의 사각형은 각각 하나의 우주이고, 우리는 그 밖으로 나가지 못합니다.'
     },
     archive: {
       label_en: '2026', label_kr: '2026',
       title_en: 'Studio Archive, 2026', title_kr: '스튜디오 아카이브, 2026',
       desc_en: 'Individual works made beside the series, each with its own title and date. For the most recent, medium and dimensions are still being confirmed with the studio.',
-      desc_kr: '연작 옆에서 만든 개별 작업. 각각의 제목과 날짜를 가집니다. 가장 최근작의 재료와 크기는 작업실 확인 중입니다.'
+      desc_kr: '연작 옆에서 그린 개별 작업. 각각의 제목과 날짜를 가집니다. 가장 최근작의 재료와 크기는 확인 중입니다.'
     },
     tp: {
       label_en: 'Series II', label_kr: '연작 II',
       title_en: 'Tremors of Countless Particles, 2023 — 2024', title_kr: '무수한 입자의 떨림, 2023 — 2024',
       desc_en: 'Oil pastel smeared and layered until form loosens into particles: the question of why anything exists in this shape, now.',
-      desc_kr: '형태가 입자로 풀어질 때까지 오일파스텔을 문지르고 쌓았다. 무엇이 왜 지금 이 모습으로 존재하는가.'
+      desc_kr: '형태가 입자로 풀어질 때까지 오일파스텔을 문지르고 쌓았습니다. 무엇이 왜 지금 이 모습으로 존재하는가에 대한 질문입니다.'
     }
   };
 
@@ -318,7 +319,7 @@
     var title = k === 'kr' ? w.title_kr : w.title_en;
     var subj = (k === 'kr' ? '[작품 문의] ' : 'Inquiry: ') + title + ' (' + w.year + (st ? ', ' + st : '') + ')';
     var body = (k === 'kr'
-      ? title + '에 대해 문의드립니다.\n\n작품 정보: ' + [w.year, k === 'kr' ? (w.medium_kr || '') : (w.medium_en || ''), st || ''].filter(Boolean).join(', ') + '\n\n'
+      ? '안녕하세요. ' + title + ' (' + w.year + (st ? ', ' + st : '') + ') 작품을 문의드립니다.\n\n'
       : 'I am writing about ' + title + ' (' + [w.year, w.medium_en, st].filter(Boolean).join(', ') + ').\n\n');
     lbInquire.href = 'mailto:e.zy@kakao.com?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body + (k === 'kr' ? '성함:\n소속:\n\n감사합니다.' : 'Name:\nAffiliation:\n\nThank you.'));
     lbPress.href = w.img;
