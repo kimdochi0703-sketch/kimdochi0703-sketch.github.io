@@ -10,7 +10,7 @@
   /* ---------------- language ---------------- */
   var STORE = 'ezy-lang';
   var titles = {
-    'index.html':   { en: 'E.ZY — Lee Ji Hwan', kr: 'E.ZY 이지환' },
+    'index.html':   { en: 'E.ZY — Lee Ji Hwan', kr: 'E.ZY — 이지환' },
     'works.html':   { en: 'Works — E.ZY', kr: '작품 — E.ZY' },
     'series.html':  { en: 'Series — E.ZY', kr: '연작 — E.ZY' },
     'archive.html': { en: 'Archive — E.ZY', kr: '아카이브 — E.ZY' },
@@ -292,8 +292,8 @@
 
   var SERIES_LABEL = {
     cc: { en: 'Consigned Consciousness', kr: '위임된 의식' },
-    frame: { en: 'Frame — We Are Always Confined', kr: 'Frame — 우리는 늘 갇혀 있다' },
-    archive: { en: 'Studio archive, 2026', kr: '스튜디오 아카이브, 2026' },
+    frame: { en: 'Frame – We Are Always Confined', kr: 'Frame – 우리는 늘 갇혀 있다' },
+    archive: { en: 'Individual works, 2026', kr: '개별 작업, 2026' },
     tp: { en: 'Tremors of Countless Particles', kr: '무수한 입자의 떨림' }
   };
 
