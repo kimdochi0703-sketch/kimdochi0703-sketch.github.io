@@ -17,7 +17,7 @@
 <meta property="og:image:alt" content="E.ZY — Consigned Consciousness – 14, 2026, oil pastel on paper">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://studio-ezy.com/assets/images/og-ezy.jpg">
-<meta name="theme-color" content="#F6F3EC">
+<meta name="theme-color" content="#0A0908">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,24 +31,32 @@
 </head>
 <body class="page page--home">
 <a class="skip" href="#main" data-en="Skip to content" data-kr="본문으로 건너뛰기">Skip to content</a>
-<header class="site-head solid at-top" id="head" data-transparent="false">
-  <a class="brand" href="index.html">
-    <span class="mark">E.ZY</span>
-    <span class="sub" data-en="Lee Ji Hwan · Seoul" data-kr="이지환 · 서울">Lee Ji Hwan · Seoul</span>
-  </a>
+<header class="site-head" id="head">
+  <a class="brand" href="index.html" aria-label="E.ZY — home"><span class="mark">E.ZY</span></a>
   <div class="head-right">
-    <nav class="nav" aria-label="Main"><a href="works.html" data-en="Works" data-kr="작품">Works</a><a href="series.html" data-en="Series" data-kr="연작">Series</a><a href="archive.html" data-en="Archive" data-kr="아카이브">Archive</a><a href="about.html" data-en="About" data-kr="소개">About</a></nav>
+    <nav class="nav" aria-label="Main">
+      <a href="works.html" data-en="Works" data-kr="작품">Works</a>
+      <a href="series.html" data-en="Series" data-kr="연작">Series</a>
+      <a href="about.html" data-en="About" data-kr="소개">About</a>
+      <a href="mailto:e.zy@kakao.com?subject=Enquiry%20%E2%80%94%20E.ZY" data-en="Contact" data-kr="연락">Contact</a>
+    </nav>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" id="lang-en" aria-pressed="true">EN</button>
-      <span class="sep">/</span>
+      <span class="sep" aria-hidden="true">/</span>
       <button type="button" id="lang-kr" aria-pressed="false">KR</button>
     </div>
-    <a class="head-inquire" href="mailto:e.zy@kakao.com?subject=Enquiry%20%E2%80%94%20E.ZY" data-en="Inquire" data-kr="문의">Inquire</a>
     <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu"><span data-en="Menu" data-kr="메뉴">Menu</span></button>
   </div>
 </header>
 <div class="menu" id="menu">
-  <nav aria-label="Mobile"><a href="index.html" aria-current="page"><span class="n">00</span><span data-en="Home" data-kr="홈">Home</span></a><a href="works.html"><span class="n">01</span><span data-en="Works" data-kr="작품">Works</span></a><a href="series.html"><span class="n">02</span><span data-en="Series" data-kr="연작">Series</span></a><a href="archive.html"><span class="n">03</span><span data-en="Archive" data-kr="아카이브">Archive</span></a><a href="about.html"><span class="n">04</span><span data-en="About" data-kr="소개">About</span></a></nav>
+  <nav aria-label="Mobile">
+    <a href="index.html" aria-current="page" data-en="Home" data-kr="홈">Home</a>
+    <a href="works.html" data-en="Works" data-kr="작품">Works</a>
+    <a href="series.html" data-en="Series" data-kr="연작">Series</a>
+    <a href="archive.html" data-en="Archive" data-kr="아카이브">Archive</a>
+    <a href="about.html" data-en="About" data-kr="소개">About</a>
+    <a href="mailto:e.zy@kakao.com?subject=Enquiry%20%E2%80%94%20E.ZY" data-en="Contact" data-kr="연락">Contact</a>
+  </nav>
   <div class="m-foot">
     <a href="mailto:e.zy@kakao.com">e.zy@kakao.com</a>
     <a href="https://www.instagram.com/e______zy/" target="_blank" rel="noopener">@e______zy</a>
@@ -57,215 +65,114 @@
 
 <main id="main">
 
-  <section class="hero" id="top">
-    <div class="hero-inner">
-      <div class="hero-grid">
-        <div class="hero-id">
-          <div class="hero-head">
-            <p class="label" data-en="Painting · Seoul" data-kr="회화 · 서울">Painting · Seoul</p>
-            <h1 class="hero-name">E.ZY</h1>
-            <p class="hero-alt"><span data-en="Lee Ji Hwan" data-kr="이지환">Lee Ji Hwan</span><span class="dot"></span><span data-en="b. 1993, Seoul" data-kr="1993년 서울">b. 1993, Seoul</span></p>
-          </div>
-          <p class="hero-line" data-en="Paintings on the moment human consciousness is handed over to another structure." data-kr="사람의 의식이 다른 구조로 옮겨 가는 지점을 그립니다.">Paintings on the moment human consciousness is handed over to another structure.</p>
-          <div class="hero-foot">
-            <a class="more" href="works.html"><span data-en="Selected works, 2023 — 2026" data-kr="선별 작품, 2023 — 2026">Selected works, 2023 — 2026</span><span class="num cnt">41</span><i>→</i></a>
-            <a class="hero-sub-link" href="series.html" data-en="Series notes" data-kr="연작 노트">Series notes</a>
-          </div>
+  <section class="room" id="room">
+    <div class="room-inner">
+      <figure class="room-figure" id="room-figure">
+        <div class="room-stage">
+          <a class="room-link" id="room-link" href="works.html#cc-14" aria-label="Consigned Consciousness – 14, 2026">
+            <img id="room-img" src="assets/images/hero-cc-14.jpg" width="2099" height="1467" alt="Consigned Consciousness – 14, 2026, oil pastel on paper" fetchpriority="high" decoding="async">
+          </a>
         </div>
-        <figure class="hero-plate">
-          <div class="plate">
-            <img src="assets/images/hero-cc-14.jpg" width="2099" height="1467" alt="Consigned Consciousness – 14, 2026, oil pastel on paper" fetchpriority="high" decoding="async">
-          </div>
-          <figcaption>
-            <p class="t" data-en="Consigned Consciousness – 14, 2026" data-kr="위임된 의식 14, 2026">Consigned Consciousness – 14, 2026</p>
-            <p class="s" data-en="Oil pastel on paper · 38 × 54 cm" data-kr="종이에 오일파스텔 · 38 × 54 cm">Oil pastel on paper · 38 × 54 cm</p>
-            <p class="n" data-en="No. 14" data-kr="No. 14">No. 14</p>
-          </figcaption>
-        </figure>
-      </div>
+        <figcaption class="room-cap" id="room-cap" aria-live="polite">
+          <span class="t" id="room-title" data-en="Consigned Consciousness – 14" data-kr="위임된 의식 14">Consigned Consciousness – 14</span>
+          <span class="m" id="room-medium" data-en="Oil pastel on paper · 38 × 54 cm" data-kr="종이에 오일파스텔 · 38 × 54 cm">Oil pastel on paper · 38 × 54 cm</span>
+          <span class="y" id="room-year" data-en="2026" data-kr="2026">2026</span>
+        </figcaption>
+      </figure>
     </div>
-    <nav class="hero-index" aria-label="On this page">
-      <div class="hero-index-in">
-        <a href="#statement"><span class="n">01</span><span data-en="Statement" data-kr="작업 노트">Statement</span></a>
-        <a href="#latest"><span class="n">02</span><span data-en="Latest" data-kr="최근 작업">Latest</span></a>
-        <a href="#works"><span class="n">03</span><span data-en="Works" data-kr="작품">Works</span></a>
-        <a href="#series"><span class="n">04</span><span data-en="Series" data-kr="연작">Series</span></a>
-        <a href="#exhibitions"><span class="n">05</span><span data-en="Exhibitions" data-kr="전시">Exhibitions</span></a>
-        <a class="to-top" href="#main" data-en="Scroll ↓" data-kr="스크롤 ↓">Scroll ↓</a>
-      </div>
-    </nav>
+    <div class="room-foot">
+      <span class="room-place" data-en="Seoul" data-kr="서울">Seoul</span>
+      <a class="room-cue" href="#statement" aria-label="Scroll to the statement" data-en="↓" data-kr="↓">↓</a>
+      <button type="button" class="room-next" id="room-next"><span data-en="Next work" data-kr="다음 작품">Next work</span> →</button>
+    </div>
   </section>
 
   <section class="section wrap" id="statement">
-    <div class="section-head">
-      <p class="label"><b>(01)</b>&nbsp; <span data-en="Statement" data-kr="작업 노트">Statement</span></p>
-      <h2 data-en="Little by little we hand our judgment to somewhere else." data-kr="우리는 조금씩 판단을 다른 곳에 맡긴다.">Little by little we hand our judgment to somewhere else.</h2>
-      <span class="aside" data-en="Artist note · Seoul" data-kr="작가 노트 · 서울">Artist note · Seoul</span>
-    </div>
-    <div class="statement">
-      <div class="statement-head">
-        <p class="lede" data-en="I paint. What I want on the canvas is the point where a person's asking, feeling and deciding quietly leaves the person and settles into a structure that answers instead."
+    <div class="statement-grid">
+      <p class="lede rv" data-en="Little by little we hand our judgment to somewhere else." data-kr="우리는 조금씩 판단을 다른 곳에 맡긴다.">Little by little we hand our judgment to somewhere else.</p>
+      <div class="prose rv">
+        <p data-en="I paint. What I want on the canvas is the point where a person's asking, feeling and deciding quietly leaves the person and settles into a structure that answers instead."
            data-kr="나는 그림을 그린다. 묻고 느끼고 결정하는 일이 어느 순간 사람을 떠나, 대신 답하는 구조 쪽으로 옮겨 가는 지점을 화면에 남기고 싶다.">I paint. What I want on the canvas is the point where a person's asking, feeling and deciding quietly leaves the person and settles into a structure that answers instead.</p>
-      </div>
-      <div class="statement-body">
-        <p class="body-text" data-en="Consigned Consciousness began there. We ask, choose and decide dozens of times a day, and much of that already passes through a screen and an algorithm. We are still the ones asking; less and less are we the ones forming the answer. The series paints that scene."
+        <p data-en="Consigned Consciousness began there. We ask, choose and decide dozens of times a day, and much of that already passes through a screen and an algorithm. We are still the ones asking; less and less are we the ones forming the answer. The series paints that scene."
            data-kr="〈위임된 의식〉은 거기서 시작했다. 우리는 하루에도 수십 번 묻고 고르고 결정하는데, 그 과정의 상당 부분은 이미 화면과 알고리즘을 거친다. 묻는 쪽은 여전히 우리지만, 답을 만드는 쪽은 점점 우리가 아니다. 연작은 그 장면을 그린다.">Consigned Consciousness began there. We ask, choose and decide dozens of times a day, and much of that already passes through a screen and an algorithm. We are still the ones asking; less and less are we the ones forming the answer. The series paints that scene.</p>
-        <p class="body-text" data-en="A circle is where thought and feeling sit. A rectangle is the screen that receives them. The line between the two looks like a road that runs both ways, but it marks a direction: what goes out."
+        <p data-en="A circle is where thought and feeling sit. A rectangle is the screen that receives them. The line between the two looks like a road that runs both ways, but it marks a direction: what goes out."
            data-kr="원은 생각하고 느끼는 자리다. 사각형은 그 생각을 받아 가는 화면이다. 두 형태를 잇는 선은 오가는 길처럼 보이지만, 실제로는 나가는 방향을 가리킨다.">A circle is where thought and feeling sit. A rectangle is the screen that receives them. The line between the two looks like a road that runs both ways, but it marks a direction: what goes out.</p>
-        <p class="body-text" data-en="In Frame the frame itself is never seen. We know it only through the contours it leaves on the surface. Divide one plane into rectangles of different sizes and each becomes a universe of its own. We believe we move freely; we stay inside that universe."
+        <p data-en="In Frame the frame itself is never seen. We know it only through the contours it leaves on the surface. Divide one plane into rectangles of different sizes and each becomes a universe of its own. We believe we move freely; we stay inside that universe."
            data-kr="〈Frame〉에서 틀은 보이지 않는다. 우리는 표면에 드러난 윤곽으로만 그 존재를 짐작한다. 한 화면을 크고 작은 사각형으로 나누면, 사각형 하나하나가 저마다의 우주가 된다. 우리는 어디로든 갈 수 있다고 믿지만, 결국 그 우주 안에 있다.">In Frame the frame itself is never seen. We know it only through the contours it leaves on the surface. Divide one plane into rectangles of different sizes and each becomes a universe of its own. We believe we move freely; we stay inside that universe.</p>
-        <p class="body-text" data-en="Behind the recent paintings are earlier ones moving the other way: oil pastel rubbed and layered until form loosens into particles."
+        <p data-en="Behind the recent paintings are earlier ones moving the other way: oil pastel rubbed and layered until form loosens into particles."
            data-kr="최근 작업 뒤에는 반대 방향으로 간 그림들이 있다. 형태가 입자로 풀어질 때까지 오일파스텔을 문지르고 쌓은 2023–24년의 작업이다.">Behind the recent paintings are earlier ones moving the other way: oil pastel rubbed and layered until form loosens into particles.</p>
       </div>
-      <div class="statement-foot">
-        <a class="more" href="series.html"><span data-en="Read the series notes" data-kr="연작 노트 읽기">Read the series notes</span><i>→</i></a>
-      </div>
     </div>
-  </section>
-
-  <section class="section wrap" id="latest">
-    <div class="section-head">
-      <p class="label"><b>(02)</b>&nbsp; <span data-en="Latest" data-kr="최근 작업">Latest</span></p>
-      <h2 data-en="November 2026" data-kr="2026년 11월">November 2026</h2>
-      <a class="aside" href="works.html?f=archive" data-en="Studio archive · 12 works →" data-kr="스튜디오 아카이브 · 12점 →">Studio archive · 12 works →</a>
-    </div>
-    <div class="latest-strip">
-        <figure class="l-item rv">
-          <a href="works.html#sa-selfsim">
-            <span class="ph"><img src="assets/images/thumbs/sa-selfsim.jpg" width="570" height="760" alt="A Self-Similar World, 2026" loading="lazy" decoding="async"></span>
-            <figcaption>
-              <span class="d" data-en="26 November 2026" data-kr="11월 26일">26 November 2026</span>
-              <span class="tt" data-en="A Self-Similar World" data-kr="자기유사적 세계">A Self-Similar World</span>
-            </figcaption>
-          </a>
-        </figure>
-        <figure class="l-item rv">
-          <a href="works.html#sa-green-eyes">
-            <span class="ph"><img src="assets/images/thumbs/sa-green-eyes.jpg" width="760" height="542" alt="Eyes Holding a Green Mist, 2026" loading="lazy" decoding="async"></span>
-            <figcaption>
-              <span class="d" data-en="24 November 2026" data-kr="11월 24일">24 November 2026</span>
-              <span class="tt" data-en="Eyes Holding a Green Mist" data-kr="초록 안개가 깃든 눈동자">Eyes Holding a Green Mist</span>
-            </figcaption>
-          </a>
-        </figure>
-        <figure class="l-item rv">
-          <a href="works.html#sa-morning-bird">
-            <span class="ph"><img src="assets/images/thumbs/sa-morning-bird.jpg" width="760" height="534" alt="Morning Bird, 2026" loading="lazy" decoding="async"></span>
-            <figcaption>
-              <span class="d" data-en="19 November 2026" data-kr="11월 19일">19 November 2026</span>
-              <span class="tt" data-en="Morning Bird" data-kr="아침새">Morning Bird</span>
-            </figcaption>
-          </a>
-        </figure>
-        <figure class="l-item rv">
-          <a href="works.html#cc-22">
-            <span class="ph"><img src="assets/images/thumbs/cc-22.jpg" width="760" height="539" alt="Consigned Consciousness – 22, 2026" loading="lazy" decoding="async"></span>
-            <figcaption>
-              <span class="d" data-en="15 November 2026" data-kr="11월 15일">15 November 2026</span>
-              <span class="tt" data-en="Consigned Consciousness – 22" data-kr="위임된 의식 22">Consigned Consciousness – 22</span>
-            </figcaption>
-          </a>
-        </figure>
+    <div class="statement-foot">
+      <a class="quiet" href="series.html"><span data-en="Series notes" data-kr="연작 노트">Series notes</span> →</a>
+      <a class="quiet" href="archive.html"><span data-en="Archive, 2019 — 2026" data-kr="아카이브, 2019 — 2026">Archive, 2019 — 2026</span> →</a>
     </div>
   </section>
 
   <section class="section wrap" id="works">
-    <div class="section-head">
-      <p class="label"><b>(03)</b>&nbsp; <span data-en="Works" data-kr="작품">Works</span></p>
-      <h2 data-en="Selected works, 2023 — 2026" data-kr="선별 작품, 2023 — 2026">Selected works, 2023 — 2026</h2>
-      <a class="aside" href="works.html" data-en="All 41 works →" data-kr="전체 41점 →">All 41 works →</a>
+    <div class="sel-head">
+      <h2 data-en="Selected works" data-kr="선별 작품">Selected works</h2>
+      <a class="quiet" href="works.html"><span data-en="All 41 works" data-kr="전체 41점">All 41 works</span> →</a>
     </div>
-    <div class="mosaic">
-      <figure class="m-item m-1 rv">
-        <a href="works.html#cc-14">
-          <span class="ph"><img src="assets/images/thumbs/cc-14.jpg" width="760" height="531" alt="Consigned Consciousness – 14, 2026" loading="lazy" decoding="async"></span>
-          <span class="m-cap">
-            <span class="cat"><span data-en="Consigned Consciousness" data-kr="위임된 의식">Consigned Consciousness</span></span>
-            <span class="tt" data-en="Consigned Consciousness – 14" data-kr="위임된 의식 14">Consigned Consciousness – 14</span>
-            <span class="sp" data-en="Oil pastel on paper · 38 × 54 cm · 2026" data-kr="종이에 오일파스텔 · 38 × 54 cm · 2026">Oil pastel on paper · 38 × 54 cm · 2026</span>
-          </span>
-        </a>
-      </figure>
-      <figure class="m-item m-2 rv">
-        <a href="works.html#cc-11">
-          <span class="ph"><img src="assets/images/thumbs/cc-11.jpg" width="529" height="760" alt="Consigned Consciousness – 11, 2026" loading="lazy" decoding="async"></span>
-          <span class="m-cap">
-            <span class="cat"><span data-en="Consigned Consciousness" data-kr="위임된 의식">Consigned Consciousness</span></span>
-            <span class="tt" data-en="Consigned Consciousness – 11" data-kr="위임된 의식 11">Consigned Consciousness – 11</span>
-            <span class="sp" data-en="Oil pastel on paper · 21 × 14.8 cm · 2026" data-kr="종이에 오일파스텔 · 21 × 14.8 cm · 2026">Oil pastel on paper · 21 × 14.8 cm · 2026</span>
-          </span>
-        </a>
-      </figure>
-      <figure class="m-item m-3 rv">
-        <a href="works.html#garden">
-          <span class="ph"><img src="assets/images/thumbs/garden.jpg" width="760" height="605" alt="A Garden of Toned Emotions, 2023" loading="lazy" decoding="async"></span>
-          <span class="m-cap">
-            <span class="cat"><span data-en="Tremors of Countless Particles" data-kr="무수한 입자의 떨림">Tremors of Countless Particles</span></span>
-            <span class="tt" data-en="A Garden of Toned Emotions" data-kr="조색된 감정의 정원">A Garden of Toned Emotions</span>
-            <span class="sp" data-en="Oil pastel on paper · 130 × 162 cm · 2023" data-kr="종이에 오일파스텔 · 130 × 162 cm · 2023">Oil pastel on paper · 130 × 162 cm · 2023</span>
-          </span>
-        </a>
-      </figure>
-      <figure class="m-item m-4 rv">
-        <a href="works.html#filling-emptying">
-          <span class="ph"><img src="assets/images/thumbs/filling-emptying.jpg" width="760" height="582" alt="Filling, Emptying, 2023" loading="lazy" decoding="async"></span>
-          <span class="m-cap">
-            <span class="cat"><span data-en="Tremors of Countless Particles" data-kr="무수한 입자의 떨림">Tremors of Countless Particles</span></span>
-            <span class="tt" data-en="Filling, Emptying" data-kr="채움, 비움">Filling, Emptying</span>
-            <span class="sp" data-en="Oil pastel on paper · 91 × 117 cm · 2023" data-kr="종이에 오일파스텔 · 91 × 117 cm · 2023">Oil pastel on paper · 91 × 117 cm · 2023</span>
-          </span>
-        </a>
-      </figure>
-      <figure class="m-item m-5 rv">
+    <div class="selection">
+      <figure class="sel-item rv">
         <a href="works.html#frame">
-          <span class="ph"><img src="assets/images/thumbs/frame.jpg" width="760" height="572" alt="Frame – We Are Always Confined, 2026" loading="lazy" decoding="async"></span>
-          <span class="m-cap">
-            <span class="cat"><span data-en="Frame" data-kr="Frame">Frame</span></span>
-            <span class="tt" data-en="Frame – We Are Always Confined" data-kr="Frame – 우리는 늘 갇혀 있다">Frame – We Are Always Confined</span>
-            <span class="sp" data-en="Mixed media · 90 × 120 cm · 2026" data-kr="혼합매체 · 90 × 120 cm · 2026">Mixed media · 90 × 120 cm · 2026</span>
-          </span>
+          <img src="assets/images/frame.jpg" width="1100" height="828" alt="Frame – We Are Always Confined, 2026" loading="lazy" decoding="async">
+          <figcaption class="sel-cap">
+            <span class="t" data-en="Frame – We Are Always Confined" data-kr="Frame – 우리는 늘 갇혀 있다">Frame – We Are Always Confined</span>
+            <span class="m" data-en="Mixed media · 90 × 120 cm" data-kr="혼합매체 · 90 × 120 cm">Mixed media · 90 × 120 cm</span>
+            <span class="y" data-en="2026" data-kr="2026">2026</span>
+          </figcaption>
+        </a>
+      </figure>
+      <figure class="sel-item sel-item--narrow rv">
+        <a href="works.html#cc-11">
+          <img src="assets/images/cc-11.jpg" width="766" height="1100" alt="Consigned Consciousness – 11, 2026" loading="lazy" decoding="async">
+          <figcaption class="sel-cap">
+            <span class="t" data-en="Consigned Consciousness – 11" data-kr="위임된 의식 11">Consigned Consciousness – 11</span>
+            <span class="m" data-en="Oil pastel on paper · 21 × 14.8 cm" data-kr="종이에 오일파스텔 · 21 × 14.8 cm">Oil pastel on paper · 21 × 14.8 cm</span>
+            <span class="y" data-en="2026" data-kr="2026">2026</span>
+          </figcaption>
+        </a>
+      </figure>
+      <figure class="sel-item rv">
+        <a href="works.html#garden">
+          <img src="assets/images/garden.jpg" width="1500" height="1194" alt="A Garden of Toned Emotions, 2023" loading="lazy" decoding="async">
+          <figcaption class="sel-cap">
+            <span class="t" data-en="A Garden of Toned Emotions" data-kr="조색된 감정의 정원">A Garden of Toned Emotions</span>
+            <span class="m" data-en="Oil pastel on paper · 130 × 162 cm" data-kr="종이에 오일파스텔 · 130 × 162 cm">Oil pastel on paper · 130 × 162 cm</span>
+            <span class="y" data-en="2023" data-kr="2023">2023</span>
+          </figcaption>
         </a>
       </figure>
     </div>
   </section>
 
   <section class="section wrap" id="series">
-    <div class="section-head">
-      <p class="label"><b>(04)</b>&nbsp; <span data-en="Series" data-kr="연작">Series</span></p>
-      <h2 data-en="Three bodies of work" data-kr="세 개의 연작">Three bodies of work</h2>
-      <a class="aside" href="series.html" data-en="Notes →" data-kr="노트 →">Notes →</a>
+    <div class="sel-head">
+      <h2 data-en="Three series" data-kr="세 개의 연작">Three series</h2>
+      <a class="quiet" href="series.html"><span data-en="Read the notes" data-kr="노트 읽기">Read the notes</span> →</a>
     </div>
-    <div class="series-index">
-      <a class="series-row" href="series.html#cc">
-        <span class="idx">I</span>
+    <div class="series-list">
+      <a class="series-item" href="series.html#cc">
         <h3><span data-en="Consigned Consciousness" data-kr="위임된 의식">Consigned Consciousness</span><em data-en="위임된 의식" data-kr="Consigned Consciousness">위임된 의식</em></h3>
-        <span class="yrs">2026 —</span>
-        <span class="cnt" data-en="23 works" data-kr="23점">23 works</span>
-        <span class="arw">→</span>
+        <span class="yr">2026 —</span>
       </a>
-      <a class="series-row" href="series.html#tp">
-        <span class="idx">II</span>
+      <a class="series-item" href="series.html#tp">
         <h3><span data-en="Tremors of Countless Particles" data-kr="무수한 입자의 떨림">Tremors of Countless Particles</span><em data-en="A Journey Toward the Reason for Existence" data-kr="존재의 이유를 향한 여정">A Journey Toward the Reason for Existence</em></h3>
-        <span class="yrs">2023 — 2024</span>
-        <span class="cnt" data-en="7 works" data-kr="7점">7 works</span>
-        <span class="arw">→</span>
+        <span class="yr">2023 — 2024</span>
       </a>
-      <a class="series-row" href="series.html#frame">
-        <span class="idx">III</span>
+      <a class="series-item" href="series.html#frame">
         <h3><span data-en="Frame" data-kr="Frame">Frame</span><em data-en="We Are Always Confined" data-kr="우리는 늘 갇혀 있다">We Are Always Confined</em></h3>
-        <span class="yrs">2026</span>
-        <span class="cnt" data-en="1 work" data-kr="1점">1 work</span>
-        <span class="arw">→</span>
+        <span class="yr">2026</span>
       </a>
     </div>
-    <p class="series-more"><a href="works.html?f=archive" data-en="Individual works made beside the series in 2026 — 12 works →" data-kr="2026년 연작 옆에서 그린 개별 작업 — 12점 →">Individual works made beside the series in 2026 — 12 works →</a></p>
   </section>
 
   <section class="section wrap" id="exhibitions">
-    <div class="section-head">
-      <p class="label"><b>(05)</b>&nbsp; <span data-en="Exhibitions" data-kr="전시">Exhibitions</span></p>
-      <h2 data-en="Selected exhibitions" data-kr="개인전과 그룹전">Selected exhibitions</h2>
-      <a class="aside" href="about.html" data-en="About &amp; CV →" data-kr="소개 · CV →">About &amp; CV →</a>
+    <div class="sel-head">
+      <h2 data-en="Exhibitions" data-kr="전시">Exhibitions</h2>
+      <a class="quiet" href="about.html"><span data-en="About &amp; CV" data-kr="소개 · CV">About &amp; CV</span> →</a>
     </div>
     <div class="exh">
       <div>
@@ -288,33 +195,24 @@
     </div>
   </section>
 
-  <section class="section wrap" id="enquiries">
-    <div class="enquiry">
-      <p class="label" data-en="Enquiries" data-kr="문의">Enquiries</p>
-      <p class="enquiry-line" data-en="Available works, studio visits, exhibition proposals and press images." data-kr="작품 열람과 작업실 방문, 전시 제안, 보도용 이미지 요청을 받습니다.">Available works, studio visits, exhibition proposals and press images.</p>
-      <a class="more" href="mailto:e.zy@kakao.com?subject=Enquiry%20—%20E.ZY"><span data-en="Write to the studio" data-kr="작업실에 메일 쓰기">Write to the studio</span><i>→</i></a>
-    </div>
-  </section>
 </main>
 <footer class="site-foot">
   <div class="foot-inner">
-    <div class="foot-top">
-      <div>
-        <p class="foot-mark">E.ZY</p>
-        <p class="foot-title" data-en="For available works, exhibition proposals and collaborations." data-kr="작품 구매와 전시 제안, 협업에 관한 문의를 받습니다.">For available works, exhibition proposals and collaborations.</p>
-      </div>
-      <dl class="foot-links">
-        <div><dt>Email</dt><dd><a href="mailto:e.zy@kakao.com">e.zy@kakao.com</a></dd></div>
-        <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/e______zy/" target="_blank" rel="noopener">@e______zy</a></dd></div>
-        <div><dt data-en="Mobile" data-kr="전화">Mobile</dt><dd><a href="tel:+821093558374">+82 10 9355 8374</a></dd></div>
-        <div><dt data-en="Studio" data-kr="작업실">Studio</dt><dd data-en="Seoul, Korea" data-kr="서울, 대한민국">Seoul, Korea</dd></div>
-      </dl>
+    <div>
+      <p class="foot-mark">E.ZY</p>
+      <p class="foot-note" data-en="For available works, exhibition proposals and collaborations." data-kr="작품 구매와 전시 제안, 협업에 관한 문의를 받습니다.">For available works, exhibition proposals and collaborations.</p>
     </div>
-    <div class="foot-bot">
+    <ul class="foot-links">
+      <li><a href="mailto:e.zy@kakao.com">e.zy@kakao.com</a></li>
+      <li><a class="ig" href="https://www.instagram.com/e______zy/" target="_blank" rel="noopener">@e______zy</a></li>
+      <li><a href="tel:+821093558374">+82 10 9355 8374</a></li>
+      <li><span data-en="Seoul, Korea" data-kr="서울, 대한민국">Seoul, Korea</span></li>
+    </ul>
+    <p class="foot-bot">
       <span>© 2026 E.ZY (Lee Ji Hwan)</span>
       <span data-en="All images courtesy of the artist." data-kr="모든 이미지는 작가의 허락 없이 사용할 수 없습니다.">All images courtesy of the artist.</span>
-      <a href="about.html" data-en="CV &amp; portfolio" data-kr="CV · 포트폴리오">CV &amp; portfolio</a>
-    </div>
+      <a href="about.html"><span data-en="CV &amp; portfolio" data-kr="CV · 포트폴리오">CV &amp; portfolio</span></a>
+    </p>
   </div>
 </footer>
 <script src="assets/app.js"></script>
