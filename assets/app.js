@@ -97,6 +97,7 @@
       a.addEventListener('click', closeMenu);
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+    document.addEventListener('langchange', function () { setMenuLabel(menu && menu.classList.contains('open')); });
   }
 
   /* ---------------- reveal ---------------- */
