@@ -146,44 +146,89 @@ a.aside:hover{color:var(--cobalt)}
   .site-head .lang{letter-spacing:.12em}
 }
 
-/* ---------- home hero: artist, then one work, whole ---------- */
+/* ---------- home hero: monumental, architectural, uncropped ---------- */
 .hero{
   position:relative;background:var(--paper);color:var(--ink);
-  padding-top:calc(var(--head) + clamp(18px,3vw,40px));
-  padding-bottom:clamp(34px,4.4vw,60px);
+  min-height:100svh;
+  display:flex;align-items:center;
+  padding-top:calc(var(--head) + clamp(24px,3.2vw,44px));
+  padding-bottom:clamp(36px,4.8vw,64px);
+  border-bottom:1px solid var(--rule);
 }
-.hero-inner{max-width:var(--max);margin:0 auto;padding:0 var(--edge)}
+.hero-inner{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--edge)}
 .hero-grid{
-  display:grid;grid-template-columns:minmax(0,clamp(230px,23vw,310px)) minmax(0,1fr);
-  gap:clamp(26px,3.2vw,48px) clamp(26px,4.4vw,72px);align-items:stretch;
+  display:grid;
+  grid-template-columns:minmax(280px,34%) minmax(0,1fr);
+  gap:clamp(28px,3.6vw,56px) clamp(32px,5vw,76px);
+  align-items:end;
 }
-.hero-id{display:flex;flex-direction:column;justify-content:space-between;gap:clamp(26px,3vw,40px);min-width:0}
+.hero-id{
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:clamp(36px,6vh,72px);min-width:0;
+  padding-bottom:2px;
+}
 .hero-eyebrow{color:var(--ink-45)}
-.hero-name{font-family:var(--serif);font-size:clamp(36px,4vw,56px);line-height:.94;letter-spacing:.005em;margin-top:clamp(12px,1.5vw,20px)}
-.hero-name-alt{font-family:"Noto Serif KR",var(--serif);font-size:clamp(13px,1.1vw,16px);letter-spacing:.02em;color:var(--ink-60);margin-top:9px}
-.hero-line{
-  font-family:var(--serif);font-size:clamp(16px,1.35vw,19px);line-height:1.66;
-  color:var(--ink-80);margin-top:clamp(16px,2vw,26px);max-width:23em;text-wrap:pretty;
+.hero-name{
+  font-family:var(--serif);
+  font-size:clamp(60px,6.8vw,104px);
+  line-height:.88;letter-spacing:-.025em;
+  margin-top:clamp(14px,1.8vw,22px);
 }
-html[lang="ko"] .hero-line{font-family:"Noto Serif KR",var(--serif);letter-spacing:-.01em;line-height:1.82;font-size:clamp(15px,1.25vw,17.5px)}
+.hero-name-alt{
+  font-family:"Noto Serif KR",var(--serif);
+  font-size:clamp(14px,1.15vw,17px);
+  letter-spacing:.08em;color:var(--ink-60);
+  margin-top:12px;
+}
+.hero-line{
+  font-family:var(--serif);font-size:clamp(17px,1.45vw,21px);line-height:1.58;
+  color:var(--ink-80);max-width:22em;text-wrap:pretty;
+}
+html[lang="ko"] .hero-line{
+  font-family:"Noto Serif KR",var(--serif);
+  letter-spacing:-.015em;line-height:1.78;
+  font-size:clamp(16px,1.3vw,18.5px);
+}
+.hero-foot{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:14px 26px;
+  margin-top:clamp(22px,2.8vw,34px);
+}
 .hero-foot .more{margin-top:0}
-.hero-plate{margin:0;display:flex;flex-direction:column;justify-content:flex-end;min-width:0}
-.hero-plate .plate{display:flex;justify-content:center;align-items:center;min-width:0}
-.hero-plate img{width:auto;height:auto;max-width:100%;max-height:clamp(280px,56vh,580px);object-fit:contain}
+.hero-sub-link{
+  font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-45);padding-bottom:6px;border-bottom:1px solid transparent;
+  transition:color .25s,border-color .25s;
+}
+.hero-sub-link:hover{color:var(--cobalt);border-color:var(--cobalt)}
+.hero-plate{
+  margin:0 0 0 auto;
+  width:fit-content;max-width:100%;
+  display:flex;flex-direction:column;min-width:0;
+}
+.hero-plate .plate{display:block;width:fit-content;max-width:100%;background:#0c0c0b}
+.hero-plate img{
+  display:block;width:auto;height:auto;max-width:100%;
+  max-height:clamp(340px,68vh,660px);
+  object-fit:contain;
+}
 .hero-plate figcaption{
   display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 24px;
-  margin-top:clamp(14px,1.7vw,22px);padding-top:12px;border-top:1px solid var(--rule);
+  margin-top:clamp(12px,1.4vw,18px);padding-top:12px;border-top:1px solid var(--rule);
+  width:100%;
 }
-.hero-plate .t{font-family:var(--serif);font-size:clamp(13px,1.1vw,15.5px);line-height:1.4;letter-spacing:-.005em}
+.hero-plate .t{font-family:var(--serif);font-size:clamp(13.5px,1.1vw,15.5px);line-height:1.4;letter-spacing:-.005em}
 .hero-plate .s{font-size:10.5px;letter-spacing:.1em;line-height:1.6;color:var(--ink-45);text-transform:uppercase;font-variant-numeric:tabular-nums}
 html[lang="ko"] .hero-plate .t{font-family:"Noto Serif KR",var(--serif)}
 html[lang="ko"] .hero-plate .s{text-transform:none;letter-spacing:.01em}
 @media (max-width:900px){
-  .hero-grid{grid-template-columns:minmax(0,1fr);gap:clamp(22px,3vw,32px)}
-  .hero-id{gap:22px;display:block}
-  .hero-name{font-size:clamp(34px,7vw,46px)}
+  .hero{min-height:0;display:block;padding-top:calc(var(--head) + 28px);padding-bottom:36px}
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:26px}
+  .hero-id{gap:18px}
+  .hero-name{font-size:clamp(52px,12vw,72px);margin-top:10px}
+  .hero-foot{margin-top:18px}
+  .hero-plate{margin:0;width:100%}
+  .hero-plate .plate{width:100%}
   .hero-plate img{max-height:none;width:100%}
-  .hero-plate .plate{justify-content:flex-start}
 }
 @media (max-width:680px){
   .hero{padding-top:calc(var(--head) + 22px);padding-bottom:30px}
