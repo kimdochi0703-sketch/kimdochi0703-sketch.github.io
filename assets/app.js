@@ -238,11 +238,13 @@
 
   var activeFilter = 'sel';
   var YEARKEY = /^\d{4}$/;
+  var shortWrap = document.getElementById('short-groups');
+  var albumCredits = document.getElementById('album-credits');
 
   function matches(w, key) {
-    if (key === 'all') return true;
+    if (key === 'all') return w.series !== 'album';
     if (key === 'sel') return !!w.sel;
-    if (YEARKEY.test(key)) return String(w.year) === key;
+    if (YEARKEY.test(key)) return w.series !== 'album' && String(w.year) === key;
     return w.series === key;
   }
 
@@ -255,15 +257,25 @@
   }
 
   function applyFilter(key, silent) {
-    var keys = ['all', 'cc', 'frame', 'archive', 'tp', 'sel'];
-    if (keys.indexOf(key) === -1 && !YEARKEY.test(key)) key = 'sel';
+    var valid = false;
+    for (var f = 0; f < filters.length; f++) {
+      if (filters[f].dataset.filter === key) { valid = true; break; }
+    }
+    if (!valid) key = 'sel';
     activeFilter = key;
+    var isShort = key === 'short';
     cards.forEach(function (c) {
       var w = works[parseInt(c.dataset.index, 10)];
-      var on = matches(w, key);
+      var on = !isShort && matches(w, key);
       c.classList.toggle('is-hidden', !on);
       if (on) c.classList.add('in');
     });
+    if (grid) grid.hidden = isShort;
+    if (shortWrap) {
+      shortWrap.hidden = !isShort;
+      if (isShort) buildShortGroups();
+    }
+    if (albumCredits) albumCredits.hidden = key !== 'album';
     filters.forEach(function (b) {
       b.setAttribute('aria-pressed', b.dataset.filter === key ? 'true' : 'false');
     });
@@ -274,10 +286,95 @@
     document.dispatchEvent(new CustomEvent('filterchange', { detail: { key: key } }));
   }
 
+  /* ---------------- short series: one section, divided by sub-headings ------------- */
+  var shortBuilt = false;
+  var shortFigs = [];
+
+  function capText(w) {
+    return langNow() === 'kr' ? w.title_kr : w.title_en;
+  }
+  function medText(w) {
+    var k = langNow();
+    return k === 'kr' ? (w.medium_kr || w.medium_en) : (w.medium_en || w.medium_kr);
+  }
+
+  function buildShortGroups() {
+    if (!shortWrap || shortBuilt) return;
+    shortBuilt = true;
+    var k = langNow();
+    Array.prototype.forEach.call(shortWrap.querySelectorAll('.sgrp'), function (sec) {
+      var g = sec.dataset.grp;
+      var holder = sec.querySelector('.sgrp-grid');
+      if (!holder) return;
+      for (var i = 0; i < works.length; i++) {
+        var w = works[i];
+        if (w.series !== 'short' || w.grp !== g) continue;
+        var fig = document.createElement('figure');
+        fig.className = 'work';
+        fig.dataset.i = i;
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'work-open';
+        btn.setAttribute('aria-label', (k === 'kr' ? '작품 보기: ' : 'View ') + capText(w));
+
+        var img = document.createElement('img');
+        img.src = w.img;
+        img.alt = capText(w) + ', ' + w.year;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        btn.appendChild(img);
+        btn.addEventListener('click', (function (n) { return function () { open(n); }; })(i));
+
+        var cap = document.createElement('figcaption');
+        cap.className = 'work-cap';
+        var wt = document.createElement('span');
+        wt.className = 'wt';
+        wt.textContent = capText(w);
+        cap.appendChild(wt);
+        var med = medText(w);
+        if (med) {
+          var wm = document.createElement('span');
+          wm.className = 'wm';
+          wm.textContent = med;
+          cap.appendChild(wm);
+        }
+        var wy = document.createElement('span');
+        wy.className = 'wy';
+        wy.textContent = w.year;
+        cap.appendChild(wy);
+
+        fig.appendChild(btn);
+        fig.appendChild(cap);
+        holder.appendChild(fig);
+        shortFigs.push(fig);
+      }
+    });
+  }
+
+  document.addEventListener('langchange', function () {
+    if (!shortFigs.length) return;
+    var k = langNow();
+    shortFigs.forEach(function (fig) {
+      var w = works[parseInt(fig.dataset.i, 10)];
+      var t = capText(w);
+      var wt = fig.querySelector('.wt');
+      if (wt) wt.textContent = t;
+      var wm = fig.querySelector('.wm');
+      if (wm) wm.textContent = medText(w);
+      var img = fig.querySelector('img');
+      if (img) img.alt = t + ', ' + w.year;
+      var btn = fig.querySelector('.work-open');
+      if (btn) btn.setAttribute('aria-label', (k === 'kr' ? '작품 보기: ' : 'View ') + t);
+    });
+  });
+
   filters.forEach(function (b) {
     b.addEventListener('click', function () {
       applyFilter(b.dataset.filter);
       var y = grid.getBoundingClientRect().top + window.scrollY - 120;
+      var bar = document.querySelector('.works-bar');
+      if (bar) y = bar.getBoundingClientRect().bottom + window.scrollY - 40;
       if (window.scrollY > y) window.scrollTo({ top: y, behavior: 'smooth' });
     });
   });
@@ -291,6 +388,7 @@
   var lbMedium = document.getElementById('lb-medium');
   var lbMediumRow = document.getElementById('lb-medium-row');
   var lbSize = document.getElementById('lb-size');
+  var lbSizeRow = lbSize ? lbSize.parentNode : null;
   var lbYear = document.getElementById('lb-year');
   var lbInquire = document.getElementById('lb-inquire');
   var lbPress = document.getElementById('lb-press');
@@ -300,9 +398,34 @@
   var SERIES_LABEL = {
     cc: { en: 'Delegated Consciousness', kr: '위임된 의식' },
     frame: { en: 'Frame – We Are Always Confined', kr: 'Frame – 우리는 늘 갇혀 있다' },
-    archive: { en: 'Individual works, 2026', kr: '개별 작업, 2026' },
-    tp: { en: 'Tremors of Countless Particles', kr: '무수한 입자의 떨림' }
+    tp: { en: 'Tremors of Countless Particles', kr: '무수한 입자의 떨림' },
+    sil: { en: 'Silhouette', kr: '실루엣' },
+    bird: { en: 'Like a Bird with a Broken Leg', kr: '다리가 부러진 새처럼' },
+    frag: { en: 'Fragments', kr: '편린' },
+    short: { en: 'Short series', kr: '소연작 모음' },
+    album: { en: 'Album artwork', kr: '앨범 아트워크' }
   };
+  var GRP_LABEL = {
+    fieldvoid: { en: 'Field and Void', kr: '장과 공' },
+    pigment: { en: 'Pigment of Light', kr: '빛의 안료' },
+    timeline: { en: 'Timeline I · II', kr: '시간선 I · II' },
+    support: { en: 'Support I · II', kr: '버팀목 I · II' },
+    past: { en: 'Person Living in the Past', kr: '과거에 사는 사람' },
+    cardboard: { en: 'Cardboard works', kr: '골판지 작업' }
+  };
+
+  function seriesLabel(w) {
+    var k = langNow();
+    var sl = SERIES_LABEL[w.series];
+    if (!sl && /^y\d{4}$/.test(w.series)) sl = { en: w.series.slice(1), kr: w.series.slice(1) };
+    if (!sl) sl = { en: '', kr: '' };
+    var name = k === 'kr' ? sl.kr : sl.en;
+    if (w.series === 'short' && w.grp && GRP_LABEL[w.grp]) {
+      var g = GRP_LABEL[w.grp];
+      return name + ' · ' + (k === 'kr' ? g.kr : g.en);
+    }
+    return name;
+  }
 
   function render(i) {
     var w = works[i];
@@ -313,10 +436,8 @@
     lbTitle.textContent = k === 'kr' ? w.title_kr : w.title_en;
     var other = k === 'kr' ? w.title_en : w.title_kr;
     var sub = k === 'kr' ? w.sub_kr : w.sub_en;
-    lbAlt.textContent = [sub, other].filter(Boolean).join(' · ');
-    var sl = SERIES_LABEL[w.series] || { en: '', kr: '' };
-    if (!sl.en && /^y\d{4}$/.test(w.series)) sl = { en: w.series.slice(1), kr: w.series.slice(1) };
-    lbSeries.textContent = k === 'kr' ? sl.kr : sl.en;
+    lbAlt.textContent = [sub, other !== lbTitle.textContent ? other : ''].filter(Boolean).join(' · ');
+    lbSeries.textContent = seriesLabel(w);
     if (w.medium_en || w.medium_kr) {
       lbMediumRow.style.display = '';
       lbMedium.textContent = k === 'kr' ? (w.medium_kr || w.medium_en) : (w.medium_en || w.medium_kr);
@@ -324,6 +445,7 @@
       lbMediumRow.style.display = 'none';
     }
     var st = sizeText(w.w, w.h, unit);
+    if (lbSizeRow) lbSizeRow.style.display = w.series === 'album' ? 'none' : '';
     lbSize.textContent = st || (k === 'kr' ? '크기 문의' : 'Dimensions on request');
     lbYear.textContent = w.year;
     var title = k === 'kr' ? w.title_kr : w.title_en;
@@ -352,8 +474,10 @@
     lb.focus({ preventScroll: true });
     var vis = visibleIndices();
     var p = vis.indexOf(i);
-    preload(vis[(p + 1) % vis.length]);
-    preload(vis[(p - 1 + vis.length) % vis.length]);
+    if (p !== -1 && vis.length > 1) {
+      preload(vis[(p + 1) % vis.length]);
+      preload(vis[(p - 1 + vis.length) % vis.length]);
+    }
     if (history.replaceState) history.replaceState(null, '', (location.pathname + location.search) + '#' + works[i].id);
   }
 
@@ -425,7 +549,19 @@
   var m = /[?&]f=([a-z0-9]+)/.exec(location.search);
   applyFilter(m ? m[1] : 'sel', true);
 
+  function groupFromHash() {
+    var h = (location.hash || '').slice(1);
+    if (!h || h.indexOf('g-') !== 0 || !shortWrap) return false;
+    var target = document.getElementById(h);
+    if (!target) return false;
+    if (activeFilter !== 'short') applyFilter('short', true);
+    buildShortGroups();
+    target.scrollIntoView({ block: 'start' });
+    return true;
+  }
+
   window.addEventListener('hashchange', function () {
+    if (groupFromHash()) return;
     var id = (location.hash || '').slice(1);
     if (!id) return;
     for (var i = 0; i < works.length; i++) {
@@ -437,7 +573,7 @@
     }
   });
 
-  if (location.hash) {
+  if (location.hash && !groupFromHash()) {
     var id0 = location.hash.slice(1);
     for (var kk = 0; kk < works.length; kk++) {
       if (works[kk].id === id0) {
