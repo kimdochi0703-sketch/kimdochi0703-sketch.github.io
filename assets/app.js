@@ -284,7 +284,6 @@
   var lbMediumRow = document.getElementById('lb-medium-row');
   var lbSize = document.getElementById('lb-size');
   var lbYear = document.getElementById('lb-year');
-  var lbNote = document.getElementById('lb-note');
   var lbInquire = document.getElementById('lb-inquire');
   var lbPress = document.getElementById('lb-press');
   var lbIndex = -1;
@@ -318,7 +317,6 @@
     var st = sizeText(w.w, w.h, unit);
     lbSize.textContent = st || (k === 'kr' ? '크기 문의' : 'Dimensions on request');
     lbYear.textContent = w.year;
-    lbNote.textContent = k === 'kr' ? w.note_kr : w.note_en;
     var title = k === 'kr' ? w.title_kr : w.title_en;
     var subj = (k === 'kr' ? '[작품 문의] ' : 'Inquiry: ') + title + ' (' + w.year + (st ? ', ' + st : '') + ')';
     var body = (k === 'kr'
