@@ -132,19 +132,19 @@
     var ROOM = [
       {
         img: 'assets/images/hero-cc-14.jpg', w: 2099, h: 1467, href: 'works.html#cc-14',
-        t_en: 'Consigned Consciousness – 14', t_kr: '위임된 의식 14',
+        t_en: 'Delegated Consciousness – No.14', t_kr: '위임된 의식 14',
         m_en: 'Oil pastel on paper · 38 × 54 cm', m_kr: '종이에 오일파스텔 · 38 × 54 cm',
         year: '2026'
       },
       {
         img: 'assets/images/2026/cc-19.jpg', w: 1500, h: 1073, href: 'works.html#cc-19',
-        t_en: 'Consigned Consciousness – 19 (Metro)', t_kr: '위임된 의식 19 (전철)',
+        t_en: 'Delegated Consciousness – No.19 (Metro)', t_kr: '위임된 의식 19 (전철)',
         m_en: 'Oil pastel on paper · 38 × 54 cm', m_kr: '종이에 오일파스텔 · 38 × 54 cm',
         year: '2026'
       },
       {
         img: 'assets/images/2026/cc-18.jpg', w: 1500, h: 1050, href: 'works.html#cc-18',
-        t_en: 'Consigned Consciousness – 18', t_kr: '위임된 의식 18',
+        t_en: 'Delegated Consciousness – No.18', t_kr: '위임된 의식 18',
         m_en: 'Oil pastel on paper · 38 × 54 cm', m_kr: '종이에 오일파스텔 · 38 × 54 cm',
         year: '2026'
       }
@@ -237,22 +237,30 @@
   if (uin) uin.addEventListener('click', function () { applyUnit('in'); });
 
   var activeFilter = 'sel';
+  var YEARKEY = /^\d{4}$/;
+
+  function matches(w, key) {
+    if (key === 'all') return true;
+    if (key === 'sel') return !!w.sel;
+    if (YEARKEY.test(key)) return String(w.year) === key;
+    return w.series === key;
+  }
 
   function visibleIndices() {
     var out = [];
     for (var i = 0; i < works.length; i++) {
-      if (activeFilter === 'all' || (activeFilter === 'sel' ? works[i].sel : works[i].series === activeFilter)) out.push(i);
+      if (matches(works[i], activeFilter)) out.push(i);
     }
     return out;
   }
 
   function applyFilter(key, silent) {
     var keys = ['all', 'cc', 'frame', 'archive', 'tp', 'sel'];
-    if (keys.indexOf(key) === -1) key = 'sel';
+    if (keys.indexOf(key) === -1 && !YEARKEY.test(key)) key = 'sel';
     activeFilter = key;
     cards.forEach(function (c) {
       var w = works[parseInt(c.dataset.index, 10)];
-      var on = (key === 'all') || (key === 'sel' ? w.sel : w.series === key);
+      var on = matches(w, key);
       c.classList.toggle('is-hidden', !on);
       if (on) c.classList.add('in');
     });
@@ -290,7 +298,7 @@
   var lastFocus = null;
 
   var SERIES_LABEL = {
-    cc: { en: 'Consigned Consciousness', kr: '위임된 의식' },
+    cc: { en: 'Delegated Consciousness', kr: '위임된 의식' },
     frame: { en: 'Frame – We Are Always Confined', kr: 'Frame – 우리는 늘 갇혀 있다' },
     archive: { en: 'Individual works, 2026', kr: '개별 작업, 2026' },
     tp: { en: 'Tremors of Countless Particles', kr: '무수한 입자의 떨림' }
@@ -307,6 +315,7 @@
     var sub = k === 'kr' ? w.sub_kr : w.sub_en;
     lbAlt.textContent = [sub, other].filter(Boolean).join(' · ');
     var sl = SERIES_LABEL[w.series] || { en: '', kr: '' };
+    if (!sl.en && /^y\d{4}$/.test(w.series)) sl = { en: w.series.slice(1), kr: w.series.slice(1) };
     lbSeries.textContent = k === 'kr' ? sl.kr : sl.en;
     if (w.medium_en || w.medium_kr) {
       lbMediumRow.style.display = '';
