@@ -422,7 +422,7 @@
   });
 
   /* ---------------- initial state ---------------- */
-  var m = /[?&]f=([a-z]+)/.exec(location.search);
+  var m = /[?&]f=([a-z0-9]+)/.exec(location.search);
   applyFilter(m ? m[1] : 'sel', true);
 
   window.addEventListener('hashchange', function () {
@@ -430,7 +430,7 @@
     if (!id) return;
     for (var i = 0; i < works.length; i++) {
       if (works[i].id === id && !lb.classList.contains('open')) {
-        if (visibleIndices().indexOf(i) === -1) applyFilter(works[i].series, true);
+        if (visibleIndices().indexOf(i) === -1) applyFilter(String(works[i].year), true);
         open(i);
         return;
       }
@@ -441,7 +441,7 @@
     var id0 = location.hash.slice(1);
     for (var kk = 0; kk < works.length; kk++) {
       if (works[kk].id === id0) {
-        if (visibleIndices().indexOf(kk) === -1) applyFilter(works[kk].series, true);
+        if (visibleIndices().indexOf(kk) === -1) applyFilter(String(works[kk].year), true);
         open(kk);
         break;
       }
