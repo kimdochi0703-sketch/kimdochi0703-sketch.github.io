@@ -38,7 +38,9 @@
     }
     var desc = document.getElementById('meta-desc');
     if (desc) desc.setAttribute('content', desc.getAttribute(isKr ? 'data-kr' : 'data-en') || '');
-    var t = titles[page];
+    var t = titles[page] || (document.body && document.body.dataset.titleEn
+      ? { en: document.body.dataset.titleEn, kr: document.body.dataset.titleKr }
+      : null);
     if (t) {
       document.title = isKr ? t.kr : t.en;
       var og = document.querySelector('meta[property="og:title"]');
@@ -47,6 +49,9 @@
     var be = document.getElementById('lang-en'), bk = document.getElementById('lang-kr');
     if (be) be.setAttribute('aria-pressed', isKr ? 'false' : 'true');
     if (bk) bk.setAttribute('aria-pressed', isKr ? 'true' : 'false');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-set-lang]'), function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-set-lang') === lang ? 'true' : 'false');
+    });
     if (save) { try { localStorage.setItem(STORE, lang); } catch (e) {} }
     document.dispatchEvent(new CustomEvent('langchange', { detail: { lang: lang } }));
   }
@@ -55,6 +60,9 @@
   var be = document.getElementById('lang-en'), bk = document.getElementById('lang-kr');
   if (be) be.addEventListener('click', function () { setLang('en', true); });
   if (bk) bk.addEventListener('click', function () { setLang('kr', true); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-set-lang]'), function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang'), true); });
+  });
 
   /* ---------------- header · three states ----------------
      room (transparent) / sliding down (hidden) / sliding up (opaque bar) */
@@ -225,12 +233,85 @@
     });
   }
 
-  /* ---------------- works page ---------------- */
+  /* ---------------- works page ----------------
+     Three ways to look at the archive:
+       · curated grid   — Selected: the two-column captioned grid, as before
+       · justified wall — years / All / series: rows filled edge to edge, no black holes
+       · text index     — four columns of type, 1,603 lines, for finding a work by name
+     The wall is built from the data array, not from 1,603 figures in the HTML. */
+
   var grid = document.getElementById('works-grid');
   if (!grid || !window.WORKS) return;
 
   var works = window.WORKS;
-  var cards = Array.prototype.slice.call(grid.querySelectorAll('.work'));
+  var wall = document.getElementById('works-wall');
+  var indexBox = document.getElementById('works-index');
+  var shortWrap = document.getElementById('short-groups');
+  var albumCredits = document.getElementById('album-credits');
+  var stripEl = document.getElementById('chapter-strip');
+  var seriesRow = document.querySelector('.filters--series');
+  var wlabel = document.getElementById('wlabel');
+
+  var activeFilter = 'sel';
+  var activeView = 'rows';
+  var unit = 'cm';
+  var YEARKEY = /^[0-9]{4}$/;
+
+  function mm(v) { return Math.round(v * 10) / 10; }
+  function toIn(v) {
+    var r = Math.round(v * 0.3937008 * 10) / 10;
+    return (r % 1 === 0) ? String(r) : r.toFixed(1);
+  }
+  function sizeText(w, h, u) {
+    if (w == null || h == null) return null;
+    if (u === 'in') return toIn(w) + ' × ' + toIn(h) + ' in';
+    return mm(w) + ' × ' + mm(h) + ' cm';
+  }
+  function sizeBoth(w, h) {
+    if (w == null || h == null) return null;
+    return mm(w) + ' × ' + mm(h) + ' cm · ' + toIn(w) + ' × ' + toIn(h) + ' in';
+  }
+
+  function capText(w) {
+    var k = langNow();
+    return k === 'kr' ? (w.title_kr || w.title_en) : (w.title_en || w.title_kr);
+  }
+  function altText(w) {
+    var k = langNow();
+    return k === 'kr' ? (w.title_en || w.title_kr) : (w.title_kr || w.title_en);
+  }
+  function medText(w) {
+    var k = langNow();
+    return k === 'kr' ? (w.medium_kr || w.medium_en) : (w.medium_en || w.medium_kr);
+  }
+
+  function matches(w, key) {
+    if (key === 'all') return w.series !== 'album';
+    if (key === 'sel') return !!w.sel;
+    if (YEARKEY.test(key)) return w.series !== 'album' && String(w.year) === key;
+    return w.series === key;
+  }
+
+  function visibleIndices() {
+    var out = [];
+    for (var i = 0; i < works.length; i++) {
+      if (matches(works[i], activeFilter)) out.push(i);
+    }
+    return out;
+  }
+
+  /* ---------------- units ---------------- */
+  function applyUnit(u) {
+    unit = u;
+    var uc = document.getElementById('unit-cm'), ui = document.getElementById('unit-in');
+    if (uc) uc.setAttribute('aria-pressed', u === 'cm' ? 'true' : 'false');
+    if (ui) ui.setAttribute('aria-pressed', u === 'in' ? 'true' : 'false');
+    if (wlabel && wlabel.classList.contains('on')) showLabel(wlabel.dataset.i);
+    if (lb && lb.classList.contains('open')) render(lbIndex);
+  }
+  var ucm = document.getElementById('unit-cm'), uin = document.getElementById('unit-in');
+  if (ucm) ucm.addEventListener('click', function () { applyUnit('cm'); });
+  if (uin) uin.addEventListener('click', function () { applyUnit('in'); });
 
   /* ---------------- mobile filter: one row, then a dark-room sheet ---------------- */
   var mTrig = document.getElementById('mfilter-trigger');
@@ -240,20 +321,30 @@
   var mValue = document.getElementById('mfilter-value');
   var mOpen = false;
 
+  function sheetLabel(el, isKr) {
+    var sp = el.querySelector('span');
+    var t = sp ? (sp.getAttribute(isKr ? 'data-kr' : 'data-en') || sp.textContent) : el.textContent;
+    return (t || '').trim();
+  }
+
   if (mTrig && mSheet && mBody) {
-    Array.prototype.forEach.call(document.querySelectorAll('.filter-stack .filters'), function (g) {
-      var isYear = g.classList.contains('filters--years');
+    var blocks = [];
+    if (stripEl) blocks.push({ el: stripEl, en: 'Chapter', kr: '연도' });
+    if (seriesRow) blocks.push({ el: seriesRow, en: 'Series', kr: '연작' });
+    blocks.forEach(function (b) {
+      var isKr = langNow() === 'kr';
       var block = document.createElement('div');
       block.className = 'fs-block';
       var lab = document.createElement('p');
       lab.className = 'fs-label';
-      lab.setAttribute('data-en', isYear ? 'Year' : 'Series');
-      lab.setAttribute('data-kr', isYear ? '연도' : '연작');
-      lab.textContent = isYear
-        ? (langNow() === 'kr' ? '연도' : 'Year')
-        : (langNow() === 'kr' ? '연작' : 'Series');
+      lab.setAttribute('data-en', b.en);
+      lab.setAttribute('data-kr', b.kr);
+      lab.textContent = isKr ? b.kr : b.en;
       block.appendChild(lab);
-      block.appendChild(g.cloneNode(true));
+      var clone = b.el.cloneNode(true);
+      clone.removeAttribute('id');
+      clone.classList.add('fs-filters');
+      block.appendChild(clone);
       mBody.appendChild(block);
     });
 
@@ -277,117 +368,396 @@
     var mClose = document.getElementById('filter-close');
     if (mClose) mClose.addEventListener('click', closeSheet);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mOpen) closeSheet(); });
+    mBody.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-filter]') : null;
+      if (b) applyFilter(b.dataset.filter);
+    });
+    document.addEventListener('langchange', function () {
+      Array.prototype.forEach.call(mBody.querySelectorAll('[data-en][data-kr]'), function (el) {
+        el.textContent = el.getAttribute(langNow() === 'kr' ? 'data-kr' : 'data-en') || el.textContent;
+      });
+    });
   }
 
-  var filters = Array.prototype.slice.call(document.querySelectorAll('[data-filter]'));
-  var unit = 'cm';
+  /* ---------------- filters · chapters · view ---------------- */
+  function labelFor(key) {
+    var el = document.querySelector('[data-filter="' + key + '"]');
+    if (!el) return key;
+    return sheetLabel(el, langNow() === 'kr');
+  }
 
-  function syncMFilter(key) {
-    if (!mValue) return;
-    var stack = document.getElementById('filter-stack');
-    if (!stack) return;
-    var bs = stack.querySelectorAll('[data-filter]');
-    for (var i = 0; i < bs.length; i++) {
-      if (bs[i].dataset.filter !== key) continue;
-      var sp = bs[i].querySelector('span');
-      var k = langNow() === 'kr';
-      mValue.textContent = sp
-        ? (sp.getAttribute(k ? 'data-kr' : 'data-en') || sp.textContent)
-        : bs[i].textContent.trim();
-      return;
+  function syncPressed() {
+    var btns = document.querySelectorAll('[data-filter]');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].setAttribute('aria-pressed', btns[i].dataset.filter === activeFilter ? 'true' : 'false');
     }
+    if (mValue) mValue.textContent = labelFor(activeFilter);
   }
 
-  function mm(v) { return Math.round(v * 10) / 10; }
-  function toIn(v) {
-    var r = Math.round(v * 0.3937008 * 10) / 10;
-    return (r % 1 === 0) ? String(r) : r.toFixed(1);
-  }
-  function sizeText(w, h, u) {
-    if (w == null || h == null) return null;
-    if (u === 'in') return toIn(w) + ' × ' + toIn(h) + ' in';
-    return mm(w) + ' × ' + mm(h) + ' cm';
+  var viewBtns = Array.prototype.slice.call(document.querySelectorAll('[data-view]'));
+  function syncView() {
+    viewBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.view === activeView ? 'true' : 'false');
+    });
   }
 
-  function applyUnit(u) {
-    unit = u;
-    var sizes = document.querySelectorAll('[data-size]');
-    for (var i = 0; i < sizes.length; i++) {
-      var t = sizeText(parseFloat(sizes[i].dataset.w), parseFloat(sizes[i].dataset.h), u);
-      if (t) sizes[i].textContent = t;
-    }
-    var uc = document.getElementById('unit-cm'), ui = document.getElementById('unit-in');
-    if (uc) uc.setAttribute('aria-pressed', u === 'cm' ? 'true' : 'false');
-    if (ui) ui.setAttribute('aria-pressed', u === 'in' ? 'true' : 'false');
-    if (lb && lb.classList.contains('open')) render(lbIndex);
-  }
-  var ucm = document.getElementById('unit-cm'), uin = document.getElementById('unit-in');
-  if (ucm) ucm.addEventListener('click', function () { applyUnit('cm'); });
-  if (uin) uin.addEventListener('click', function () { applyUnit('in'); });
-
-  var activeFilter = 'sel';
-  var YEARKEY = /^\d{4}$/;
-  var shortWrap = document.getElementById('short-groups');
-  var albumCredits = document.getElementById('album-credits');
-
-  function matches(w, key) {
-    if (key === 'all') return w.series !== 'album';
-    if (key === 'sel') return !!w.sel;
-    if (YEARKEY.test(key)) return w.series !== 'album' && String(w.year) === key;
-    return w.series === key;
+  function updateURL() {
+    var q = [];
+    if (activeFilter !== 'sel') q.push('f=' + activeFilter);
+    if (activeView === 'index') q.push('v=index');
+    var url = location.pathname + (q.length ? '?' + q.join('&') : '');
+    if (history.replaceState) history.replaceState(null, '', url);
   }
 
-  function visibleIndices() {
-    var out = [];
-    for (var i = 0; i < works.length; i++) {
-      if (matches(works[i], activeFilter)) out.push(i);
-    }
-    return out;
+  function scrolledToWorks() {
+    var bar = document.querySelector('.works-bar');
+    if (!bar) return;
+    var y = bar.getBoundingClientRect().bottom + window.scrollY - 36;
+    if (window.scrollY > y) window.scrollTo({ top: y, behavior: 'smooth' });
   }
 
   function applyFilter(key, silent) {
-    var valid = false;
-    for (var f = 0; f < filters.length; f++) {
-      if (filters[f].dataset.filter === key) { valid = true; break; }
-    }
-    if (!valid) key = 'sel';
+    if (!document.querySelector('[data-filter="' + key + '"]')) key = 'sel';
     activeFilter = key;
-    var isShort = key === 'short';
-    cards.forEach(function (c) {
-      var w = works[parseInt(c.dataset.index, 10)];
-      var on = !isShort && matches(w, key);
-      c.classList.toggle('is-hidden', !on);
-      if (on) c.classList.add('in');
-    });
-    if (grid) grid.hidden = isShort;
-    if (shortWrap) {
-      shortWrap.hidden = !isShort;
-      if (isShort) buildShortGroups();
-    }
-    if (albumCredits) albumCredits.hidden = key !== 'album';
-    filters.forEach(function (b) {
-      b.setAttribute('aria-pressed', b.dataset.filter === key ? 'true' : 'false');
-    });
-    syncMFilter(key);
-    if (mOpen) closeSheet();
-    if (!silent) {
-      var url = location.pathname + (key === 'sel' ? '' : '?f=' + key);
-      if (history.replaceState) history.replaceState(null, '', url);
-    }
+    syncPressed();
+    paint();
+    if (mOpen && typeof closeSheet === 'function') closeSheet();
+    if (!silent) { updateURL(); scrolledToWorks(); }
     document.dispatchEvent(new CustomEvent('filterchange', { detail: { key: key } }));
   }
+
+  function setView(v, silent) {
+    activeView = (v === 'index') ? 'index' : 'rows';
+    syncView();
+    paint();
+    if (!silent) { updateURL(); scrolledToWorks(); }
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-filter]') : null;
+    if (!b || (mBody && mBody.contains(b))) return;
+    applyFilter(b.dataset.filter);
+  });
+  viewBtns.forEach(function (b) {
+    b.addEventListener('click', function () { setView(b.dataset.view); });
+  });
+
+  /* ---------------- curated grid (Selected) ---------------- */
+  function buildGrid() {
+    var idxs = visibleIndices();
+    var frag = document.createDocumentFragment();
+    var k = langNow() === 'kr';
+    idxs.forEach(function (i) {
+      var w = works[i];
+      var fig = document.createElement('figure');
+      fig.className = 'work';
+      fig.dataset.i = i;
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'work-open';
+      btn.setAttribute('aria-label', (k ? '작품 보기: ' : 'View ') + capText(w) + ', ' + w.year);
+      var img = document.createElement('img');
+      img.src = w.img;
+      img.width = w.iw;
+      img.height = w.ih;
+      img.alt = capText(w) + ', ' + w.year;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      btn.appendChild(img);
+      btn.addEventListener('click', function () { open(i); });
+
+      var cap = document.createElement('figcaption');
+      cap.className = 'work-cap';
+      var wt = document.createElement('span');
+      wt.className = 'wt';
+      wt.setAttribute('data-en', w.title_en);
+      wt.setAttribute('data-kr', w.title_kr);
+      wt.textContent = capText(w);
+      cap.appendChild(wt);
+      var med = medText(w);
+      var size = sizeText(w.w, w.h, unit);
+      if (med || size) {
+        var wm = document.createElement('span');
+        wm.className = 'wm';
+        wm.textContent = [med, size].filter(Boolean).join(' · ');
+        cap.appendChild(wm);
+      }
+      var wy = document.createElement('span');
+      wy.className = 'wy';
+      wy.textContent = w.year;
+      cap.appendChild(wy);
+
+      fig.appendChild(btn);
+      fig.appendChild(cap);
+      frag.appendChild(fig);
+    });
+    grid.innerHTML = '';
+    grid.appendChild(frag);
+  }
+
+  /* ---------------- justified wall ---------------- */
+  var wallChapters = [];
+
+  function aspectOf(i) {
+    var w = works[i];
+    return (w.iw && w.ih) ? w.iw / w.ih : 0.72;
+  }
+  function rowTarget() {
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    if (vw < 560) return 150;
+    if (vw < 900) return 200;
+    return 300;
+  }
+
+  function layoutRows(idxs, W) {
+    var gap = 8;
+    var target = rowTarget();
+    var rows = [], row = [], sum = 0;
+    for (var n = 0; n < idxs.length; n++) {
+      var i = idxs[n];
+      /* height this row would have if it closed before this work */
+      var hPrev = row.length ? (W - gap * (row.length - 1)) / sum : Infinity;
+      row.push(i);
+      sum += aspectOf(i);
+      var h = (W - gap * (row.length - 1)) / sum;
+      if (h <= target) {
+        /* keep the break whose row height sits closest to the target */
+        if (row.length > 1 && hPrev <= target * 1.06 && Math.abs(hPrev - target) < Math.abs(h - target)) {
+          var carry = row.pop();
+          sum -= aspectOf(carry);
+          rows.push({ items: row, h: hPrev });
+          row = [carry];
+          sum = aspectOf(carry);
+        } else {
+          rows.push({ items: row, h: h });
+          row = [];
+          sum = 0;
+        }
+      }
+    }
+    if (row.length) {
+      var h2 = (W - gap * (row.length - 1)) / sum;
+      rows.push({ items: row, h: Math.min(h2, target) });
+    }
+    return rows;
+  }
+
+  function buildRows(holder, idxs) {
+    var W = Math.round(holder.clientWidth);
+    if (!W) return;
+    var rows = layoutRows(idxs, W);
+    var frag = document.createDocumentFragment();
+    var k = langNow() === 'kr';
+    rows.forEach(function (r) {
+      var rowEl = document.createElement('div');
+      rowEl.className = 'wrow';
+      rowEl.style.height = r.h.toFixed(2) + 'px';
+      r.items.forEach(function (i) {
+        var w = works[i];
+        var fig = document.createElement('figure');
+        fig.className = 'wimg';
+        fig.style.width = (r.h * aspectOf(i)).toFixed(2) + 'px';
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'wopen';
+        btn.dataset.i = i;
+        btn.setAttribute('aria-label', (k ? '작품 보기: ' : 'View ') + capText(w) + ', ' + w.year);
+
+        var img = document.createElement('img');
+        img.src = w.img;
+        img.width = w.iw;
+        img.height = w.ih;
+        img.alt = capText(w) + ', ' + w.year;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        btn.appendChild(img);
+        btn.addEventListener('click', function () { open(i); });
+
+        fig.appendChild(btn);
+        rowEl.appendChild(fig);
+      });
+      frag.appendChild(rowEl);
+    });
+    holder.appendChild(frag);
+  }
+
+  function renderWall() {
+    wall.innerHTML = '';
+    wallChapters = [];
+    var idxs = visibleIndices();
+
+    if (activeFilter === 'all') {
+      var byYear = {};
+      idxs.forEach(function (i) {
+        var y = String(works[i].year);
+        (byYear[y] = byYear[y] || []).push(i);
+      });
+      Object.keys(byYear).sort().reverse().forEach(function (y) {
+        var sec = document.createElement('section');
+        sec.className = 'wchapter';
+        var h = document.createElement('h2');
+        h.className = 'wchapter-h';
+        h.innerHTML = '<span class="y">' + y + '</span><span class="c">' + byYear[y].length + '</span>';
+        var holder = document.createElement('div');
+        holder.className = 'wrows';
+        sec.appendChild(h);
+        sec.appendChild(holder);
+        wall.appendChild(sec);
+        wallChapters.push({ holder: holder, idxs: byYear[y], done: false });
+      });
+    } else {
+      var only = document.createElement('div');
+      only.className = 'wrows wrows--single';
+      wall.appendChild(only);
+      wallChapters.push({ holder: only, idxs: idxs, done: false });
+    }
+    pump();
+  }
+
+  /* build one chapter ahead as the reader scrolls; keeps the first paint light */
+  function pump() {
+    for (var n = 0; n < wallChapters.length; n++) {
+      var c = wallChapters[n];
+      if (c.done) continue;
+      buildRows(c.holder, c.idxs);
+      c.done = true;
+      var last = c.holder.lastElementChild || c.holder;
+      var r = last.getBoundingClientRect();
+      if (r.bottom > (window.innerHeight || 800) + 1200) return;
+    }
+  }
+  window.addEventListener('scroll', function () { if (wallChapters.length) pump(); }, { passive: true });
+
+  /* ---------------- wall label (hover / focus) ---------------- */
+  function showLabel(i) {
+    if (!wlabel) return;
+    var w = works[i];
+    if (!w) return;
+    wlabel.dataset.i = i;
+    var med = medText(w);
+    var size = sizeText(w.w, w.h, unit);
+    var meta = [med, size, w.year].filter(Boolean).join(' · ');
+    wlabel.innerHTML = '<span class="wl-t"></span><span class="wl-m"></span>';
+    wlabel.querySelector('.wl-t').textContent = capText(w);
+    wlabel.querySelector('.wl-m').textContent = meta;
+    wlabel.classList.add('on');
+  }
+  function hideLabel() {
+    if (wlabel) wlabel.classList.remove('on');
+  }
+  if (wall) {
+    wall.addEventListener('pointerover', function (e) {
+      var b = e.target.closest ? e.target.closest('.wopen') : null;
+      if (b) showLabel(+b.dataset.i);
+    });
+    wall.addEventListener('pointerout', function (e) {
+      var b = e.target.closest ? e.target.closest('.wopen') : null;
+      if (!b) return;
+      if (e.relatedTarget && b.contains(e.relatedTarget)) return;
+      hideLabel();
+    });
+    wall.addEventListener('focusin', function (e) {
+      var b = e.target.closest ? e.target.closest('.wopen') : null;
+      if (b) showLabel(+b.dataset.i);
+    });
+    wall.addEventListener('focusout', hideLabel);
+  }
+
+  /* ---------------- text index ---------------- */
+  function renderIndex() {
+    var idxs = visibleIndices();
+    var byYear = {};
+    idxs.forEach(function (i) {
+      var y = String(works[i].year);
+      (byYear[y] = byYear[y] || []).push(i);
+    });
+    var years = Object.keys(byYear).sort().reverse();
+    var k = langNow() === 'kr';
+    var frag = document.createDocumentFragment();
+
+    years.forEach(function (y) {
+      var sec = document.createElement('section');
+      sec.className = 'ichapter';
+      var h = document.createElement('h2');
+      h.className = 'ichapter-h';
+      h.innerHTML = '<span class="y">' + y + '</span><span class="c">' + byYear[y].length + '</span>';
+      sec.appendChild(h);
+
+      var ul = document.createElement('ul');
+      ul.className = 'ilist';
+      byYear[y].forEach(function (i) {
+        var w = works[i];
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.className = 'iitem';
+        a.dataset.i = i;
+        a.href = w.page ? w.page : '#' + w.id;
+        a.setAttribute('data-en', w.title_en);
+        a.setAttribute('data-kr', w.title_kr);
+        a.textContent = capText(w);
+        a.addEventListener('click', function (e) {
+          if (w.page) return;
+          e.preventDefault();
+          open(i);
+        });
+        li.appendChild(a);
+        var ys = document.createElement('span');
+        ys.className = 'iy';
+        ys.textContent = w.year;
+        li.appendChild(ys);
+        ul.appendChild(li);
+      });
+      sec.appendChild(ul);
+      frag.appendChild(sec);
+    });
+
+    indexBox.innerHTML = '';
+    indexBox.appendChild(frag);
+  }
+
+  /* ---------------- render ---------------- */
+  function updateTally(n) {
+    var el = document.getElementById('works-tally');
+    if (!el) return;
+    var k = langNow() === 'kr';
+    var num = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    var label = activeFilter === 'all' ? '2020–2026' : labelFor(activeFilter);
+    el.textContent = activeFilter === 'sel'
+      ? (k ? '선별 ' + num + '점' : num + ' selected works')
+      : (k ? num + '점 · ' + label : num + ' works · ' + label);
+  }
+
+  function paint() {
+    var isShort = activeFilter === 'short';
+    var mode = activeView === 'index' ? 'index' : (isShort ? 'short' : (activeFilter === 'sel' ? 'grid' : 'wall'));
+    grid.hidden = mode !== 'grid';
+    wall.hidden = mode !== 'wall';
+    indexBox.hidden = mode !== 'index';
+    if (shortWrap) shortWrap.hidden = mode !== 'short';
+    if (albumCredits) albumCredits.hidden = !(activeFilter === 'album' && mode !== 'index');
+    hideLabel();
+
+    if (mode === 'grid') buildGrid();
+    else if (mode === 'wall') renderWall();
+    else if (mode === 'index') renderIndex();
+    else if (mode === 'short') { buildShortGroups(); refreshShort(); }
+    updateTally(visibleIndices().length);
+  }
+
+  var resizeTick = 0;
+  window.addEventListener('resize', function () {
+    if (resizeTick) window.clearTimeout(resizeTick);
+    resizeTick = window.setTimeout(function () {
+      resizeTick = 0;
+      if (activeView !== 'index' && activeFilter !== 'sel' && activeFilter !== 'short') renderWall();
+    }, 180);
+  });
 
   /* ---------------- short series: one section, divided by sub-headings ------------- */
   var shortBuilt = false;
   var shortFigs = [];
-
-  function capText(w) {
-    return langNow() === 'kr' ? w.title_kr : w.title_en;
-  }
-  function medText(w) {
-    var k = langNow();
-    return k === 'kr' ? (w.medium_kr || w.medium_en) : (w.medium_en || w.medium_kr);
-  }
 
   function buildShortGroups() {
     if (!shortWrap || shortBuilt) return;
@@ -411,11 +781,13 @@
 
         var img = document.createElement('img');
         img.src = w.img;
+        img.width = w.iw;
+        img.height = w.ih;
         img.alt = capText(w) + ', ' + w.year;
         img.loading = 'lazy';
         img.decoding = 'async';
         btn.appendChild(img);
-        btn.addEventListener('click', (function (n) { return function () { open(n); }; })(i));
+        btn.addEventListener('click', (function (n) { return function () { open(n); if (works[n].page) window.location.href = works[n].page; }; })(i));
 
         var cap = document.createElement('figcaption');
         cap.className = 'work-cap';
@@ -443,7 +815,7 @@
     });
   }
 
-  document.addEventListener('langchange', function () {
+  function refreshShort() {
     if (!shortFigs.length) return;
     var k = langNow();
     shortFigs.forEach(function (fig) {
@@ -458,18 +830,17 @@
       var btn = fig.querySelector('.work-open');
       if (btn) btn.setAttribute('aria-label', (k === 'kr' ? '작품 보기: ' : 'View ') + t);
     });
-  });
+  }
 
-  document.addEventListener('langchange', function () { syncMFilter(activeFilter); });
-
-  filters.forEach(function (b) {
-    b.addEventListener('click', function () {
-      applyFilter(b.dataset.filter);
-      var y = grid.getBoundingClientRect().top + window.scrollY - 120;
-      var bar = document.querySelector('.works-bar');
-      if (bar) y = bar.getBoundingClientRect().bottom + window.scrollY - 40;
-      if (window.scrollY > y) window.scrollTo({ top: y, behavior: 'smooth' });
-    });
+  document.addEventListener('langchange', function () {
+    hideLabel();
+    if (wlabel && wlabel.dataset.i) hideLabel();
+    if (activeView === 'index') renderIndex();
+    else if (activeFilter === 'sel') buildGrid();
+    else if (activeFilter === 'short') refreshShort();
+    else { syncPressed(); }
+    if (mValue) mValue.textContent = labelFor(activeFilter);
+    updateTally(visibleIndices().length);
   });
 
   /* ---------------- lightbox ---------------- */
@@ -477,14 +848,11 @@
   var lbImg = document.getElementById('lb-img');
   var lbTitle = document.getElementById('lb-title');
   var lbAlt = document.getElementById('lb-alt');
-  var lbSeries = document.getElementById('lb-series');
-  var lbMedium = document.getElementById('lb-medium');
-  var lbMediumRow = document.getElementById('lb-medium-row');
-  var lbSize = document.getElementById('lb-size');
-  var lbSizeRow = lbSize ? lbSize.parentNode : null;
-  var lbYear = document.getElementById('lb-year');
+  var lbLine2 = document.getElementById('lb-line2');
+  var lbLine3 = document.getElementById('lb-line3');
   var lbInquire = document.getElementById('lb-inquire');
   var lbPress = document.getElementById('lb-press');
+  var lbMore = document.getElementById('lb-more');
   var lbIndex = -1;
   var lastFocus = null;
 
@@ -530,17 +898,13 @@
     var other = k === 'kr' ? w.title_en : w.title_kr;
     var sub = k === 'kr' ? w.sub_kr : w.sub_en;
     lbAlt.textContent = [sub, other !== lbTitle.textContent ? other : ''].filter(Boolean).join(' · ');
-    lbSeries.textContent = seriesLabel(w);
-    if (w.medium_en || w.medium_kr) {
-      lbMediumRow.style.display = '';
-      lbMedium.textContent = k === 'kr' ? (w.medium_kr || w.medium_en) : (w.medium_en || w.medium_kr);
-    } else {
-      lbMediumRow.style.display = 'none';
-    }
+    /* wall label, three lines: title · medium and size · year and series */
     var st = sizeText(w.w, w.h, unit);
-    if (lbSizeRow) lbSizeRow.style.display = w.series === 'album' ? 'none' : '';
-    lbSize.textContent = st || (k === 'kr' ? '크기 문의' : 'Dimensions on request');
-    lbYear.textContent = w.year;
+    var med = w.series === 'album' ? (k === 'kr' ? '앨범 커버 아트워크' : 'Album cover artwork') : medText(w);
+    var line2 = [med, st].filter(Boolean).join(' · ');
+    if (!line2) line2 = (k === 'kr' ? '재료와 크기 문의' : 'Medium and dimensions on request');
+    if (lbLine2) lbLine2.textContent = line2;
+    if (lbLine3) lbLine3.textContent = [w.year, seriesLabel(w)].filter(Boolean).join(' · ');
     var title = k === 'kr' ? w.title_kr : w.title_en;
     var subj = (k === 'kr' ? '[작품 문의] ' : 'Inquiry: ') + title + ' (' + w.year + (st ? ', ' + st : '') + ')';
     var body = (k === 'kr'
@@ -549,6 +913,15 @@
     lbInquire.href = 'mailto:e.zy@kakao.com?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body + (k === 'kr' ? '성함:\n소속:\n\n감사합니다.' : 'Name:\nAffiliation:\n\nThank you.'));
     lbPress.href = w.img;
     lbPress.setAttribute('download', 'E.ZY_' + w.id + '.jpg');
+    if (lbMore) {
+      if (w.page) {
+        lbMore.href = w.page;
+        lbMore.hidden = false;
+        lbMore.querySelector('span').textContent = k === 'kr' ? '작품 페이지' : 'Work page';
+      } else {
+        lbMore.hidden = true;
+      }
+    }
   }
 
   function preload(i) {
@@ -591,13 +964,6 @@
     if (history.replaceState) history.replaceState(null, '', (location.pathname + location.search) + '#' + works[nextIdx].id);
   }
 
-  cards.forEach(function (card) {
-    var btn = card.querySelector('.work-open');
-    var idx = parseInt(card.dataset.index, 10);
-    if (!btn) return;
-    btn.addEventListener('click', function () { open(idx); });
-  });
-
   lb.querySelector('.lb-close').addEventListener('click', close);
   lb.querySelector('.lb-prev').addEventListener('click', function () { step(-1); });
   lb.querySelector('.lb-next').addEventListener('click', function () { step(1); });
@@ -639,8 +1005,11 @@
   });
 
   /* ---------------- initial state ---------------- */
-  var m = /[?&]f=([a-z0-9]+)/.exec(location.search);
-  applyFilter(m ? m[1] : 'sel', true);
+  var mf = /[?&]f=([a-z0-9]+)/.exec(location.search);
+  var mv = /[?&]v=([a-z]+)/.exec(location.search);
+  if (mv && mv[1] === 'index') activeView = 'index';
+  applyFilter(mf ? mf[1] : 'sel', true);
+  syncView();
 
   function groupFromHash() {
     var h = (location.hash || '').slice(1);
@@ -653,27 +1022,26 @@
     return true;
   }
 
-  window.addEventListener('hashchange', function () {
-    if (groupFromHash()) return;
+  function openFromHash() {
     var id = (location.hash || '').slice(1);
-    if (!id) return;
+    if (!id || id.indexOf('g-') === 0) return false;
     for (var i = 0; i < works.length; i++) {
-      if (works[i].id === id && !lb.classList.contains('open')) {
+      if (works[i].id === id) {
         if (visibleIndices().indexOf(i) === -1) applyFilter(String(works[i].year), true);
         open(i);
-        return;
+        return true;
       }
     }
+    return false;
+  }
+
+  window.addEventListener('hashchange', function () {
+    if (groupFromHash()) return;
+    if (lb.classList.contains('open')) return;
+    openFromHash();
   });
 
   if (location.hash && !groupFromHash()) {
-    var id0 = location.hash.slice(1);
-    for (var kk = 0; kk < works.length; kk++) {
-      if (works[kk].id === id0) {
-        if (visibleIndices().indexOf(kk) === -1) applyFilter(String(works[kk].year), true);
-        open(kk);
-        break;
-      }
-    }
+    if (!lb.classList.contains('open')) openFromHash();
   }
 })();
