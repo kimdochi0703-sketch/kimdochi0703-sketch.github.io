@@ -883,7 +883,7 @@
     var name = k === 'kr' ? sl.kr : sl.en;
     if (w.series === 'short' && w.grp && GRP_LABEL[w.grp]) {
       var g = GRP_LABEL[w.grp];
-      return name + ' · ' + (k === 'kr' ? g.kr : g.en);
+      return k === 'kr' ? g.kr : g.en;
     }
     return name;
   }
