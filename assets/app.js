@@ -56,12 +56,37 @@
   if (be) be.addEventListener('click', function () { setLang('en', true); });
   if (bk) bk.addEventListener('click', function () { setLang('kr', true); });
 
-  /* ---------------- header ---------------- */
+  /* ---------------- header · three states ----------------
+     room (transparent) / sliding down (hidden) / sliding up (opaque bar) */
   var head = document.getElementById('head');
   if (head) {
-    var onScroll = function () { head.classList.toggle('scrolled', window.scrollY > 16); };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    var headAnchor = window.scrollY || 0;   // position of the last state change
+    var headTick = false;
+    var paintHead = function () {
+      headTick = false;
+      var y = window.scrollY || 0;
+      if (y <= 10) {
+        head.classList.remove('is-hidden');
+        head.classList.remove('is-solid');
+        headAnchor = y;
+      } else if (y > headAnchor + 6) {
+        head.classList.add('is-solid');
+        if (y > 72) head.classList.add('is-hidden');
+        headAnchor = y;
+      } else if (y < headAnchor - 6) {
+        head.classList.remove('is-hidden');
+        head.classList.add('is-solid');
+        headAnchor = y;
+      }
+    };
+    var queueHead = function () {
+      if (headTick) return;
+      headTick = true;
+      requestAnimationFrame(paintHead);
+    };
+    if ((window.scrollY || 0) > 10) head.classList.add('is-solid');
+    paintHead();
+    window.addEventListener('scroll', queueHead, { passive: true });
   }
 
   /* ---------------- mobile menu ---------------- */
@@ -206,8 +231,72 @@
 
   var works = window.WORKS;
   var cards = Array.prototype.slice.call(grid.querySelectorAll('.work'));
+
+  /* ---------------- mobile filter: one row, then a dark-room sheet ---------------- */
+  var mTrig = document.getElementById('mfilter-trigger');
+  var mSheet = document.getElementById('filter-sheet');
+  var mVeil = document.getElementById('filter-veil');
+  var mBody = document.getElementById('filter-sheet-body');
+  var mValue = document.getElementById('mfilter-value');
+  var mOpen = false;
+
+  if (mTrig && mSheet && mBody) {
+    Array.prototype.forEach.call(document.querySelectorAll('.filter-stack .filters'), function (g) {
+      var isYear = g.classList.contains('filters--years');
+      var block = document.createElement('div');
+      block.className = 'fs-block';
+      var lab = document.createElement('p');
+      lab.className = 'fs-label';
+      lab.setAttribute('data-en', isYear ? 'Year' : 'Series');
+      lab.setAttribute('data-kr', isYear ? '연도' : '연작');
+      lab.textContent = isYear
+        ? (langNow() === 'kr' ? '연도' : 'Year')
+        : (langNow() === 'kr' ? '연작' : 'Series');
+      block.appendChild(lab);
+      block.appendChild(g.cloneNode(true));
+      mBody.appendChild(block);
+    });
+
+    var openSheet = function () {
+      mOpen = true;
+      mSheet.classList.add('open');
+      if (mVeil) mVeil.classList.add('open');
+      mTrig.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    };
+    var closeSheet = function () {
+      if (!mOpen) return;
+      mOpen = false;
+      mSheet.classList.remove('open');
+      if (mVeil) mVeil.classList.remove('open');
+      mTrig.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+    mTrig.addEventListener('click', function () { if (mOpen) { closeSheet(); } else { openSheet(); } });
+    if (mVeil) mVeil.addEventListener('click', closeSheet);
+    var mClose = document.getElementById('filter-close');
+    if (mClose) mClose.addEventListener('click', closeSheet);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mOpen) closeSheet(); });
+  }
+
   var filters = Array.prototype.slice.call(document.querySelectorAll('[data-filter]'));
   var unit = 'cm';
+
+  function syncMFilter(key) {
+    if (!mValue) return;
+    var stack = document.getElementById('filter-stack');
+    if (!stack) return;
+    var bs = stack.querySelectorAll('[data-filter]');
+    for (var i = 0; i < bs.length; i++) {
+      if (bs[i].dataset.filter !== key) continue;
+      var sp = bs[i].querySelector('span');
+      var k = langNow() === 'kr';
+      mValue.textContent = sp
+        ? (sp.getAttribute(k ? 'data-kr' : 'data-en') || sp.textContent)
+        : bs[i].textContent.trim();
+      return;
+    }
+  }
 
   function mm(v) { return Math.round(v * 10) / 10; }
   function toIn(v) {
@@ -279,6 +368,8 @@
     filters.forEach(function (b) {
       b.setAttribute('aria-pressed', b.dataset.filter === key ? 'true' : 'false');
     });
+    syncMFilter(key);
+    if (mOpen) closeSheet();
     if (!silent) {
       var url = location.pathname + (key === 'sel' ? '' : '?f=' + key);
       if (history.replaceState) history.replaceState(null, '', url);
@@ -368,6 +459,8 @@
       if (btn) btn.setAttribute('aria-label', (k === 'kr' ? '작품 보기: ' : 'View ') + t);
     });
   });
+
+  document.addEventListener('langchange', function () { syncMFilter(activeFilter); });
 
   filters.forEach(function (b) {
     b.addEventListener('click', function () {
